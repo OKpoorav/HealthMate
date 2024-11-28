@@ -1,45 +1,126 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-  <title>Reminder Dashboard</title>
-  <link rel="stylesheet" href="style.css"><link>
-  <script src="https://apis.google.com/js/api.js"></script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Interactive Dashboard</title>
+    <link rel="stylesheet" href="style.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script> <!-- For Analytics Chart -->
 </head>
 <body>
-  <div class="container">
-    <div class="search-container">
-      <div class="search-bar">
-        <input type="text" placeholder="Search...">
-      </div>
-    </div>
-    <div class="profile">
-      <img src="https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_1280.png" alt="Profile" class="profile-pic">
-      <div class="profile-name">Hello, John</div>
-    </div>
-    <div class="content-wrapper">
-      <div class="document-list">
-        <div class="heading">Documents:</div>
-        <div class="item"></div>
-        <div class="item"></div>
-        <div class="item"></div>
-        <div class="item"></div>
-      </div>
-      <div class="calendar">
-        <!-- Calendar component goes here -->
-        <div id="google-calendar-events"></div>
-      </div>
-    </div>
-    <div class="reminders">
-      <div class="title">REMINDERS:</div>
-      <!-- Reminders content goes here -->
-    </div>
-  </div>
+    <!-- Header -->
+    <header>
+        <div class="logo">My Dashboard</div>
+        <input class="search" type="text" placeholder="Search...">
+        <div class="profile">👤</div>
+    </header>
 
-  <script src="calender.js"></script>
+    <!-- Main Section -->
+    <main>
+        <!-- Documents Section -->
+        <section class="documents">
+            <h2>Documents</h2>
+            <div class="doc-container">
+                <div class="doc-box">Document 1</div>
+                <div class="doc-box">Document 2</div>
+                <div class="doc-box">Document 3</div>
+            </div>
+        </section>
 
-  <script async defer src="https://apis.google.com/js/api.js"
-        onload="this.onload=function(){};handleClientLoad()"
-        onreadystatechange="if (this.readyState === 'complete') this.onload()">
-    </script>
+        <!-- Main Content Section -->
+        <section class="main-content">
+            <!-- Left Content Section (Reminders + Calendar and Details) -->
+            <div class="left-content">
+                <!-- Reminders Section -->
+                <div class="reminders">
+                    <h2>Reminders</h2>
+                    <div class="slider">
+                        <div class="slide">Reminder 1</div>
+                        <div class="slide">Reminder 2</div>
+                        <div class="slide">Reminder 3</div>
+                    </div>
+                </div>
+
+                <!-- Calendar and Details Section -->
+                <div class="calendar-details">
+                    <!-- Calendar Box -->
+                    <div class="calendar">
+                        <div class="calendar-header">
+                            <button>Prev</button>
+                            <h3>November 2024</h3>
+                            <button>Next</button>
+                        </div>
+                        <div class="calendar-grid">
+                            <div class="day-name">Sun</div>
+                            <div class="day-name">Mon</div>
+                            <div class="day-name">Tue</div>
+                            <div class="day-name">Wed</div>
+                            <div class="day-name">Thu</div>
+                            <div class="day-name">Fri</div>
+                            <div class="day-name">Sat</div>
+
+                            <div class="day">1</div>
+                            <div class="day">2</div>
+                            <div class="day">3</div>
+                            <div class="day">4</div>
+                            <div class="day">5</div>
+                            <div class="day">6</div>
+                            <div class="day">7</div>
+                            <div class="day">8</div>
+                            <div class="day">9</div>
+                            <div class="day">10</div>
+                            <div class="day">11</div>
+                            <div class="day">12</div>
+                            <div class="day">13</div>
+                            <div class="day">14</div>
+                            <div class="day">15</div>
+                            <div class="day">16</div>
+                            <div class="day">17</div>
+                            <div class="day">18</div>
+                            <div class="day">19</div>
+                            <div class="day">20</div>
+                            <div class="day">21</div>
+                            <div class="day">22</div>
+                            <div class="day">23</div>
+                            <div class="day">24</div>
+                            <div class="day">25</div>
+                            <div class="day">26</div>
+                            <div class="day">27</div>
+                            <div class="day">28</div>
+                            <div class="day">29</div>
+                            <div class="day">30</div>
+                        </div>
+                    </div>
+
+                    <!-- Details Box -->
+                    <div class="details">
+                        <h2>Details</h2>
+                        <p>Details about the selected date will appear here.</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Chat Section -->
+            <div class="chat">
+                <h2>Chat</h2>
+                <div class="chat-box">
+                    <p class="user-message">Hello, how can I assist you today?</p>
+                    <p class="bot-message">I can help with that! What do you need?</p>
+                </div>
+                <div class="chat-input">
+                    <input type="text" placeholder="Type a message...">
+                    <button>→</button>
+                </div>
+            </div>
+        </section>
+
+        <!-- Analytics Section -->
+        <section class="analytics">
+            <h2>Analytics</h2>
+            <canvas id="myChart" width="400" height="200"></canvas>
+        </section>
+    </main>
+
+    <script src="app.js"></script>
 </body>
 </html>
