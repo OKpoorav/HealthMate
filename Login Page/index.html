@@ -6,8 +6,9 @@
     <title>HealthMate - Wellness Portal</title>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+    <script src="https://accounts.google.com/gsi/client" async defer></script> <!-- Google Identity Services -->
+    <script src="https://cdn.jsdelivr.net/npm/jwt-decode@3.1.2/build/jwt-decode.min.js"></script>
     <link rel="stylesheet" href="style.css">
-    <script src="https://accounts.google.com/gsi/client" async defer></script>
 </head>
 <body>
     <div class="container">
@@ -28,9 +29,7 @@
                 <button type="submit" class="primary-btn">Login</button>
             </form>
             <div class="social-login">
-                <div class="social-btn" id="googleLogin">
-                    <i class="fab fa-google"></i> Google
-                </div>
+                <div class="social-btn" id="googleLogin"></div>
             </div>
             <div class="switch-section">
                 <span class="switch-btn" id="toRegister">Don't have an account? Register</span>
@@ -59,9 +58,7 @@
                 <button type="submit" class="primary-btn">Register</button>
             </form>
             <div class="social-login">
-                <div class="social-btn" id="googleRegister">
-                    <i class="fab fa-google"></i> Google
-                </div>
+                <div class="social-btn" id="googleRegister"></div>
             </div>
             <div class="switch-section">
                 <span class="switch-btn" id="toLogin">Already have an account? Login</span>
