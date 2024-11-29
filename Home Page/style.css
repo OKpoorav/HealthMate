@@ -85,7 +85,6 @@ main {
   display: flex;
   gap: 15px;
   overflow-x: auto;
-  max-height: 400px;
   padding: 10px;
   justify-content: flex-start;
   align-items: center;
@@ -129,9 +128,9 @@ main {
 /* Main Content Section */
 .main-content {
   display: flex;
-  gap: 30px;
   flex-wrap: wrap;
   justify-content: space-between;
+  gap: 30px;
 }
 
 /* Left Content Section (Reminders + Calendar, Details, and Chat) */
@@ -139,14 +138,14 @@ main {
   display: flex;
   gap: 30px;
   flex: 3;
-  flex-wrap: nowrap;
+  flex-wrap: wrap;
   justify-content: space-between;
 }
 
 /* Reminders Section */
 .reminders {
-  flex: 2;
-  min-width: 25%;
+  flex: 1;
+  min-width: 250px;
   background-color: #ffffff;
   padding: 20px;
   border-radius: 10px;
@@ -156,9 +155,9 @@ main {
 /* Calendar and Details Section */
 .calendar-details {
   display: flex;
-  flex-direction: column;
-  flex: 1;
+  flex-direction: row;
   gap: 20px;
+  flex: 1;
 }
 
 .calendar {
@@ -166,44 +165,6 @@ main {
   padding: 20px;
   border-radius: 10px;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-}
-
-.calendar-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 10px;
-}
-
-.calendar-header button {
-  background: #58a6ff;
-  color: #ffffff;
-  border: none;
-  padding: 8px 15px;
-  border-radius: 5px;
-  cursor: pointer;
-}
-
-.calendar-header button:hover {
-  background: #004d80;
-}
-
-.calendar-grid {
-  display: grid;
-  grid-template-columns: repeat(7, 1fr);
-  gap: 10px;
-}
-
-.day-name, .day {
-  text-align: center;
-  padding: 10px;
-  background: #f4f8fc;
-  border-radius: 5px;
-  cursor: pointer;
-}
-
-.day:hover {
-  background: #e0e7f1;
 }
 
 .details {
@@ -283,4 +244,74 @@ main {
 canvas {
   margin-top: 20px;
   width: 100%;
+  height: 200px;
+}
+
+/* Media Queries for Responsiveness */
+@media (max-width: 1200px) {
+  .left-content {
+    flex: 2;
+  }
+}
+
+@media (max-width: 900px) {
+  .main-content {
+    flex-direction: column;
+  }
+
+  .left-content {
+    flex: 1;
+    margin-bottom: 20px;
+  }
+
+  .chat {
+    flex: 1;
+  }
+
+  .documents .doc-container {
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+
+  .doc-box {
+    width: 220px;
+    height: 100px;
+  }
+}
+
+@media (max-width: 600px) {
+  header {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .search {
+    width: 100%;
+    margin: 10px 0;
+  }
+
+  .left-content {
+    flex: 1;
+    gap: 20px;
+  }
+
+  .chat {
+    flex: 1;
+    margin-top: 20px;
+  }
+
+  .doc-box {
+    width: 100%;
+    height: 80px;
+    font-size: 14px;
+  }
+
+  .add-doc-button {
+    width: 100%;
+    height: 80px;
+  }
+
+  .calendar iframe {
+    width: 100%;
+  }
 }
