@@ -8,7 +8,7 @@
 body {
   font-family: Arial, sans-serif;
   line-height: 1.6;
-  background-color: #f4f4f9;
+  background-color: #f6f9fc;
   color: #333;
 }
 
@@ -17,29 +17,44 @@ header {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  background: #4a90e2;
-  color: white;
   padding: 10px 20px;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  background-color: #ffffff;
+  border-bottom: 1px solid #e0e0e0;
 }
 
 header .logo {
   font-size: 1.5rem;
   font-weight: bold;
+  display: flex;
+  align-items: center;
+  color: #004d80;
 }
 
 header .search {
   flex: 1;
   margin: 0 20px;
   padding: 8px 12px;
-  border: none;
-  border-radius: 5px;
+  border: 1px solid #e0e0e0;
+  border-radius: 50px;
   font-size: 1rem;
 }
 
 header .profile {
   font-size: 1.5rem;
   cursor: pointer;
+  display: flex;
+}
+
+header .profile-photo {
+  background-color: #cce5ff;
+  border-radius: 50%;
+  padding: 6px;
+  margin-right: 8px;
+}
+
+header .logo img {
+  height: 50px;
+  margin-right: 10px;
 }
 
 /* Main Section */
@@ -47,32 +62,68 @@ main {
   padding: 30px;
   max-width: 1200px;
   margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
 }
 
 /* Documents Section */
 .documents {
-  margin-bottom: 30px;
+  background-color: #ffffff;
+  padding: 20px;
+  border-radius: 10px;
+  margin-bottom: 20px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
 }
 
 .documents h2 {
   margin-bottom: 10px;
-  color: #4a4a4a;
+  color: #004d80;
 }
 
 .doc-container {
   display: flex;
-  gap: 20px;
+  gap: 15px;
+  overflow-x: auto;
+  max-height: 400px;
+  padding: 10px;
+  justify-content: flex-start;
+  align-items: center;
+  scroll-snap-type: x mandatory;
+  width: 100%;
 }
 
 .doc-box {
-  background: linear-gradient(135deg, #6a5acd, #836fff);
+  width: 240px;
+  height: 120px;
+  background: linear-gradient(135deg, #58a6ff, #004d80);
   color: white;
-  padding: 20px;
-  flex: 1;
+  border-radius: 10px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
   text-align: center;
-  border-radius: 8px;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-  font-size: 1.2rem;
+  font-size: 15px;
+  margin-bottom: 10px;
+  scroll-snap-align: start;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.add-doc-button {
+  width: 240px;
+  height: 120px;
+  background-color: #58a6ff;
+  color: white;
+  border: none;
+  border-radius: 10px;
+  cursor: pointer;
+  font-size: 1rem;
+  margin-bottom: 10px;
+}
+
+.add-doc-button:hover {
+  background-color: #004d80;
 }
 
 /* Main Content Section */
@@ -83,55 +134,37 @@ main {
   justify-content: space-between;
 }
 
-/* Left Content Section (Reminders + Calendar and Details) */
+/* Left Content Section (Reminders + Calendar, Details, and Chat) */
 .left-content {
   display: flex;
   gap: 30px;
-  flex: 1;
+  flex: 3;
+  flex-wrap: nowrap;
   justify-content: space-between;
-  flex-wrap: wrap;
 }
 
 /* Reminders Section */
 .reminders {
-  flex: 1;
-  background: #ffe4b5;
-  padding: 25px;
-  border-radius: 8px;
+  flex: 2;
+  min-width: 25%;
+  background-color: #ffffff;
+  padding: 20px;
+  border-radius: 10px;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-}
-
-.reminders h2 {
-  margin-bottom: 15px;
-}
-
-.slider {
-  position: relative;
-  overflow: hidden;
-  height: 100px;
-}
-
-.slide {
-  min-width: 100%;
-  text-align: center;
-  transition: transform 0.5s ease-in-out;
-  font-size: 1.3rem;
-  color: #4a4a4a;
 }
 
 /* Calendar and Details Section */
 .calendar-details {
   display: flex;
-  gap: 30px;
+  flex-direction: column;
   flex: 1;
+  gap: 20px;
 }
 
-/* Calendar Box */
 .calendar {
-  flex: 0 0 34%; /* Adjusted width for the calendar */
-  background: #fff;
-  padding: 25px;
-  border-radius: 8px;
+  background: #ffffff;
+  padding: 20px;
+  border-radius: 10px;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
 }
 
@@ -143,63 +176,56 @@ main {
 }
 
 .calendar-header button {
-  background: #4a90e2;
-  color: #fff;
+  background: #58a6ff;
+  color: #ffffff;
   border: none;
-  padding: 7px 15px;
+  padding: 8px 15px;
   border-radius: 5px;
   cursor: pointer;
 }
 
 .calendar-header button:hover {
-  background: #357abd;
+  background: #004d80;
 }
 
 .calendar-grid {
   display: grid;
   grid-template-columns: repeat(7, 1fr);
   gap: 10px;
-  font-size: 1.1rem;
 }
 
 .day-name, .day {
   text-align: center;
   padding: 10px;
-  background: #f9f9f9;
+  background: #f4f8fc;
   border-radius: 5px;
   cursor: pointer;
 }
 
 .day:hover {
-  background: #e4e4e4;
+  background: #e0e7f1;
 }
 
-/* Details Box */
 .details {
-  flex: 0 0 20%;
-  background: #fff;
-  padding: 25px;
-  border-radius: 8px;
+  background: #ffffff;
+  padding: 20px;
+  border-radius: 10px;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-}
-
-.details h2 {
-  margin-bottom: 15px;
 }
 
 /* Chat Section */
 .chat {
-  flex: 1;
-  background: #fff;
+  flex: 2;
+  background: #ffffff;
   padding: 20px;
-  border-radius: 8px;
+  border-radius: 10px;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
 }
 
 .chat-box {
-  background: #f0f0f0;
+  background: #f0f4f8;
   padding: 20px;
-  border-radius: 8px;
+  border-radius: 10px;
   margin-bottom: 15px;
 }
 
@@ -208,48 +234,53 @@ main {
 }
 
 .user-message {
-  background-color: #4a90e2;
-  color: white;
+  background-color: #58a6ff;
+  color: #ffffff;
   padding: 10px;
   border-radius: 5px;
 }
 
 .bot-message {
-  background-color: #d3d3d3;
+  background-color: #e0e7f1;
   color: #333;
   padding: 10px;
   border-radius: 5px;
 }
 
+.chat-input {
+  display: flex;
+  gap: 10px;
+}
+
 .chat-input input {
-  width: calc(100% - 60px);
+  flex: 1;
   padding: 10px;
-  border: 1px solid #ccc;
+  border: 1px solid #d1d9e6;
   border-radius: 5px;
 }
 
 .chat-input button {
-  background-color: #4a90e2;
+  background-color: #58a6ff;
   color: white;
+  padding: 10px 20px;
   border: none;
-  padding: 12px;
   border-radius: 5px;
   cursor: pointer;
 }
 
 .chat-input button:hover {
-  background-color: #357abd;
+  background-color: #004d80;
 }
 
 /* Analytics Section */
 .analytics {
-  margin-top: 50px;
-  background: #fff;
+  background: #ffffff;
   padding: 25px;
-  border-radius: 8px;
+  border-radius: 10px;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
 }
 
-.analytics h2 {
-  margin-bottom: 20px;
+canvas {
+  margin-top: 20px;
+  width: 100%;
 }
