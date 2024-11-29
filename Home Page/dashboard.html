@@ -7,6 +7,16 @@
     <link rel="stylesheet" href="style.css">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script> <!-- For Analytics Chart -->
     <script src="https://apis.google.com/js/api.js"></script> <!-- For Google Calendar API -->
+
+        <script type="importmap">
+        {
+            "imports": {
+                "@google/generative-ai": "https://esm.run/@google/generative-ai"
+            }
+        }
+        </script>
+        <script type="module" src="HealthBudyAPI.js"></script>
+   
 </head>
 <body>
     <!-- Header -->
@@ -67,7 +77,7 @@
                 </div>
                 <div class="chat-input">
                     <input type="text" placeholder="Type a message...">
-                    <button>→</button>
+                    <button class="enter-input">→</button>
                 </div>
             </div>
         </section>
@@ -78,7 +88,6 @@
             <canvas id="myChart" width="400" height="200"></canvas>
         </section>
     </main>
-
     <script src="app.js"></script>
 </body>
 </html>
