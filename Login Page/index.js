@@ -1,101 +1,53 @@
-        // Form Toggle Logic
-        function toggleForms(showLogin) {
-            const container = document.querySelector('.container');
+// Handle Google OAuth response
+function handleCredentialResponse(response) {
+    const token = response.credential;
 
-            if (showLogin) {
-                container.classList.remove('slide-left');
-                container.classList.add('slide-right');
-            } else {
-                container.classList.remove('slide-right');
-                container.classList.add('slide-left');
-            }
-        }
+    // Store the token in localStorage
+    localStorage.setItem('google_token', token);
 
-        // Event Listeners for Form Switching
-        document.getElementById('toRegister').addEventListener('click', () => {
-            toggleForms(false);
-        });
+    // Check if the user is on login or registration section
+    const isRegistering = document.querySelector('.register-section').classList.contains('active');
+    
+    if (isRegistering) {
+        // Simulate user registration success
+        alert('Registration successful! Redirecting to the home page...');
+        window.location.href = '/Home Page/dashboard.html'; // Change to your home URL
+    } else {
+        // Simulate user login success
+        alert('Login Successful! Redirecting to the home page...');
+        window.location.href = '/Home Page/dashboard.html'; // Change to your home URL
+    }
+}
 
-        document.getElementById('toLogin').addEventListener('click', () => {
-            toggleForms(true);
-        });
+// Add functionality to toggle between login and register sections
+document.getElementById('toRegister').addEventListener('click', () => {
+    document.querySelector('.container').classList.add('slide-left');
+    document.querySelector('.login-section').classList.remove('active');
+    document.querySelector('.register-section').classList.add('active');
+});
 
-        // Validation Functions
-        const validateEmail = (email) => {
-            const re = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
-            return re.test(String(email).toLowerCase());
-        };
+document.getElementById('toLogin').addEventListener('click', () => {
+    document.querySelector('.container').classList.remove('slide-left');
+    document.querySelector('.login-section').classList.add('active');
+    document.querySelector('.register-section').classList.remove('active');
+});
 
-        const validatePassword = (password) => password.length >= 8;
-        const validateName = (name) => name.trim().length > 0;
+// Initialize Google Login button for login and register
+window.onload = function() {
+    google.accounts.id.initialize({
+        client_id: '876080209753-0k7oip0morqa1bk0rlhvfi8oeqn9r4uq.apps.googleusercontent.com',  // Replace with your Google OAuth client ID
+        callback: handleCredentialResponse
+    });
 
-        // Form Validation Setup
-        function setupFormValidation(formId) {
-            const form = document.getElementById(formId);
-            const inputs = form.querySelectorAll('input[type="text"], input[type="email"], input[type="password"]');
+    // Render Google button for login
+    google.accounts.id.renderButton(
+        document.getElementById('googleLogin'),
+        { theme: 'outline', size: 'large' }  // Customize the button appearance if needed
+    );
 
-            inputs.forEach(input => {
-                input.addEventListener('input', () => {
-                    const value = input.value.trim();
-                    const inputType = input.type;
-                    const errorContainer = input.parentElement;
-                    let isValid = false;
-
-                    switch(inputType) {
-                        case 'email':
-                            isValid = validateEmail(value);
-                            break;
-                        case 'password':
-                            isValid = validatePassword(value);
-                            break;
-                        case 'text':
-                            isValid = validateName(value);
-                            break;
-                    }
-
-                    errorContainer.classList.toggle('error', !isValid);
-                });
-            });
-
-            form.addEventListener('submit', (e) => {
-                e.preventDefault();
-                let formIsValid = true;
-
-                inputs.forEach(input => {
-                    const value = input.value.trim();
-                    const inputType = input.type;
-                    const errorContainer = input.parentElement;
-                    let isValid = false;
-
-                    switch(inputType) {
-                        case 'email':
-                            isValid = validateEmail(value);
-                            break;
-                        case 'password':
-                            isValid = validatePassword(value);
-                            break;
-                        case 'text':
-                            isValid = validateName(value);
-                            break;
-                    }
-
-                    errorContainer.classList.toggle('error', !isValid);
-                    formIsValid = formIsValid && isValid;
-                });
-
-                if (formIsValid) {
-                    alert(`${formId === 'loginForm' ? 'Login' : 'Registration'} submitted successfully!`);
-                }
-            });
-        }
-
-        // Initialize form validations
-        setupFormValidation('loginForm');
-        setupFormValidation('registerForm');
-
-        // Social Login Handlers
-        ['googleLogin', 'googleRegister', 'appleLogin', 'appleRegister'].forEach(id => {
-            document.getElementById(id).addEventListener('click', () => {
-                alert(`Simulated ${id.includes('google') ? 'Google' : 'Apple'} login`);
-            });
-        });
+    // Render Google button for register
+    google.accounts.id.renderButton(
+        document.getElementById('googleRegister'),
+        { theme: 'outline', size: 'large' }  // Customize the button appearance if needed
+    );
+};
