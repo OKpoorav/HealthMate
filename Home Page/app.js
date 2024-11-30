@@ -142,3 +142,25 @@ document.addEventListener('click', function(){
         })
     })
 });
+
+document.addEventListener('DOMContentLoaded', () => {
+    const images = document.querySelectorAll('.carousel-image');
+    let currentIndex = 0;
+
+    function showNextImage() {
+        // Remove active class from current image
+        images[currentIndex].classList.remove('active');
+
+        // Move to next image, wrap around to start if at end
+        currentIndex = (currentIndex + 1) % images.length;
+
+        // Add active class to next image
+        images[currentIndex].classList.add('active');
+    }
+
+    // Initialize first image
+    images[currentIndex].classList.add('active');
+
+    // Change image every 3 seconds
+    setInterval(showNextImage, 3000);
+});
