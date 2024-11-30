@@ -39,28 +39,39 @@ function initGoogleAuth() {
     );
 }
 
-// Toggle between Login and Register forms
-function toggleForms(showLogin) {
-    const loginForm = document.querySelector('.login-section');
-    const registerForm = document.querySelector('.register-section');
 
-    if (showLogin) {
-        loginForm.classList.add('active');
-        registerForm.classList.remove('active');
+window.onload = initGoogleAuth;
+// Handle Google OAuth response
+function handleCredentialResponse(response) {
+    const token = response.credential;
+
+    // Store the token in localStorage
+    localStorage.setItem('google_token', token);
+
+    // Check if the user is on login or registration section
+    const isRegistering = document.querySelector('.register-section').classList.contains('active');
+    
+    if (isRegistering) {
+        // Simulate user registration success
+        alert('Registration successful! Redirecting to the home page...');
+        window.location.href = '/Home Page/dashboard.html'; // Change to your home URL
     } else {
-        loginForm.classList.remove('active');
-        registerForm.classList.add('active');
+        // Simulate user login success
+        alert('Login Successful! Redirecting to the home page...');
+        window.location.href = '/Home Page/dashboard.html'; // Change to your home URL
     }
 }
 
-// Form switch event listeners
+// Add functionality to toggle between login and register sections
 document.getElementById('toRegister').addEventListener('click', () => {
-    toggleForms(false);
+    document.querySelector('.container').classList.add('slide-left');
+    document.querySelector('.login-section').classList.remove('active');
+    document.querySelector('.register-section').classList.add('active');
 });
 
 document.getElementById('toLogin').addEventListener('click', () => {
-    toggleForms(true);
+    document.querySelector('.container').classList.remove('slide-left');
+    document.querySelector('.login-section').classList.add('active');
+    document.querySelector('.register-section').classList.remove('active');
 });
 
-// Load Google Auth when the page is loaded
-window.onload = initGoogleAuth;

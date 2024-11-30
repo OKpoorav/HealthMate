@@ -9,7 +9,7 @@ def get_google_access_token(code):
     # Prepare the payload with the authorization code
     payload = {
         "code": code,
-        "client_id": "876080209753-0k7oip0morqa1bk0rlhvfi8oeqn9r4uq.apps.googleusercontent.com,
+        "client_id": "876080209753-0k7oip0morqa1bk0rlhvfi8oeqn9r4uq.apps.googleusercontent.com",
         "client_secret": client_secret,
         "redirect_uri": redirect_uri,
         "grant_type": "authorization_code"
