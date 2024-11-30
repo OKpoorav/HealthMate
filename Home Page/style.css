@@ -6,9 +6,10 @@
 }
 
 body {
-  font-family: Arial, sans-serif;
+  font-family: 'Roboto', sans-serif;
   line-height: 1.6;
-  background-color: #f6f9fc;
+  /* background-color: #f6f9fc; */
+  background: linear-gradient(180deg, #eef2f7, #ffffff);
   color: #333;
 }
 
@@ -17,9 +18,12 @@ header {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 10px 20px;
-  background-color: #ffffff;
-  border-bottom: 1px solid #e0e0e0;
+  padding: 15px 30px;
+  /* background-color: #ffffff;
+  border-bottom: 1px solid #e0e0e0; */
+  background: #004d80;
+  color: white;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 }
 
 header .logo {
@@ -27,7 +31,7 @@ header .logo {
   font-weight: bold;
   display: flex;
   align-items: center;
-  color: #004d80;
+  /* color: #004d80; */
 }
 
 header .search {
@@ -35,7 +39,8 @@ header .search {
   margin: 0 20px;
   padding: 8px 12px;
   border: 1px solid #e0e0e0;
-  border-radius: 50px;
+  /* border: none; */
+  border-radius: 25px;
   font-size: 1rem;
 }
 
@@ -43,12 +48,14 @@ header .profile {
   font-size: 1.5rem;
   cursor: pointer;
   display: flex;
+  align-items: center;
 }
 
 header .profile-photo {
-  background-color: #cce5ff;
+  /* background-color: #cce5ff; */
+  background-color: #58a6ff;
   border-radius: 50%;
-  padding: 6px;
+  padding: 10px;
   margin-right: 8px;
 }
 
@@ -59,9 +66,9 @@ header .logo img {
 
 /* Main Section */
 main {
-  padding: 30px;
+  padding: 20px;
   max-width: 1200px;
-  margin: 0 auto;
+  margin: auto;
   display: flex;
   flex-direction: column;
   gap: 20px;
@@ -69,7 +76,8 @@ main {
 
 /* Documents Section */
 .documents {
-  background-color: #ffffff;
+  /* background-color: #ffffff; */
+  background: white;
   padding: 20px;
   border-radius: 10px;
   margin-bottom: 20px;
@@ -94,25 +102,30 @@ main {
 
 .doc-box {
   width: 240px;
-  height: 120px;
-  background: linear-gradient(135deg, #58a6ff, #004d80);
+  height: 120px; 
+  background: linear-gradient(135deg, #0078d7, #004d80);
   color: white;
   border-radius: 10px;
   display: flex;
   justify-content: center;
   align-items: center;
   text-align: center;
-  font-size: 15px;
+  font-size: 1.1rem;
   margin-bottom: 10px;
   scroll-snap-align: start;
   text-overflow: ellipsis;
   white-space: nowrap;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  transition: transform 0.2s;
+}
+.doc-box:hover {
+  transform: scale(1.05);
 }
 
 .add-doc-button {
   width: 240px;
   height: 120px;
-  background-color: #58a6ff;
+  background: #0078d7;
   color: white;
   border: none;
   border-radius: 10px;
@@ -122,7 +135,7 @@ main {
 }
 
 .add-doc-button:hover {
-  background-color: #004d80;
+  background: #0059b3;
 }
 
 /* Main Content Section */
@@ -180,7 +193,7 @@ main {
   background: #ffffff;
   padding: 20px;
   border-radius: 10px;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.15);
 }
 
 .chat-box {
