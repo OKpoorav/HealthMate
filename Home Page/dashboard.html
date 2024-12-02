@@ -6,34 +6,47 @@
     <title>Interactive Dashboard</title>
     <link rel="stylesheet" href="style.css">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script> <!-- For Analytics Chart -->
+    <script src="https://apis.google.com/js/api.js"></script> <!-- For Google Calendar API -->
 </head>
 <body>
     <!-- Header -->
     <header>
-        <div class="logo">My Dashboard</div>
+        <div class="logo">
+            <div class="logo-img">
+                <img src="/Home Page/images/HealthMateLogo1-removebg-preview.png" alt="HealthMate">
+            </div>
+            Health Mate
+        </div>
         <input class="search" type="text" placeholder="Search...">
-        <div class="profile">👤</div>
+        <div class="profile">
+            <div class="profile-photo">
+                <img id="profile-image" alt="Profile Image" width="100" height="100"/>
+            </div>
+            <div class="text" id="profile-name">Hi, User</div>
+        </div>
     </header>
+    
 
     <!-- Main Section -->
     <main>
         <!-- Documents Section -->
+        <!-- Documents Section -->
         <section class="documents">
-            <h2>Documents</h2>
-            <div class="doc-container">
-                <div class="doc-box">Document 1</div>
-                <div class="doc-box">Document 2</div>
-                <div class="doc-box">Document 3</div>
-            </div>
+          <h2>Documents</h2>
+          <div class="doc-container" id="doc-container">
+              <div class="doc-box">Document 1</div>
+              <div class="doc-box">Document 2</div>
+              <div class="doc-box">Document 3</div>
+              <div class="doc-box">Document 4</div>
+              <button class="add-doc-button" onclick="addDocument()">Add Document</button> <!-- Button to add documents -->
+          </div>
         </section>
-
         <!-- Main Content Section -->
         <section class="main-content">
             <!-- Left Content Section (Reminders + Calendar and Details) -->
             <div class="left-content">
                 <!-- Reminders Section -->
                 <div class="reminders">
-                    <h2>Reminders</h2>
                     <div class="slider">
                         <div class="slide">Reminder 1</div>
                         <div class="slide">Reminder 2</div>
@@ -43,53 +56,9 @@
 
                 <!-- Calendar and Details Section -->
                 <div class="calendar-details">
-                    <!-- Calendar Box -->
-                    <div class="calendar">
-                        <div class="calendar-header">
-                            <button>Prev</button>
-                            <h3>November 2024</h3>
-                            <button>Next</button>
-                        </div>
-                        <div class="calendar-grid">
-                            <div class="day-name">Sun</div>
-                            <div class="day-name">Mon</div>
-                            <div class="day-name">Tue</div>
-                            <div class="day-name">Wed</div>
-                            <div class="day-name">Thu</div>
-                            <div class="day-name">Fri</div>
-                            <div class="day-name">Sat</div>
-
-                            <div class="day">1</div>
-                            <div class="day">2</div>
-                            <div class="day">3</div>
-                            <div class="day">4</div>
-                            <div class="day">5</div>
-                            <div class="day">6</div>
-                            <div class="day">7</div>
-                            <div class="day">8</div>
-                            <div class="day">9</div>
-                            <div class="day">10</div>
-                            <div class="day">11</div>
-                            <div class="day">12</div>
-                            <div class="day">13</div>
-                            <div class="day">14</div>
-                            <div class="day">15</div>
-                            <div class="day">16</div>
-                            <div class="day">17</div>
-                            <div class="day">18</div>
-                            <div class="day">19</div>
-                            <div class="day">20</div>
-                            <div class="day">21</div>
-                            <div class="day">22</div>
-                            <div class="day">23</div>
-                            <div class="day">24</div>
-                            <div class="day">25</div>
-                            <div class="day">26</div>
-                            <div class="day">27</div>
-                            <div class="day">28</div>
-                            <div class="day">29</div>
-                            <div class="day">30</div>
-                        </div>
+                    <!-- Google Calendar Section -->
+                    <div class="calendar" id="google-calendar-events">
+                      <iframe src="https://calendar.google.com/calendar/embed?height=300&wkst=1&ctz=Asia%2FKolkata&showPrint=0&showTitle=0&showTabs=0&title=Health%20Mate&src=aGVhbHRobG92ZXNtYXRlQGdtYWlsLmNvbQ&color=%23039BE5" style="border:solid 1px #777" width="500" height="300" frameborder="0" scrolling="no"></iframe>
                     </div>
 
                     <!-- Details Box -->
