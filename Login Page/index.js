@@ -1,101 +1,103 @@
-        // Form Toggle Logic
-        function toggleForms(showLogin) {
-            const container = document.querySelector('.container');
+// Function to handle Google login and registration
+function handleGoogleAuth(response) {
+    if (response.credential) {
+        // Decode the Google credential to get user info
+        const googleUser = jwt_decode(response.credential);
+        console.log('Logged in as:', googleUser);
 
-            if (showLogin) {
-                container.classList.remove('slide-left');
-                container.classList.add('slide-right');
-            } else {
-                container.classList.remove('slide-right');
-                container.classList.add('slide-left');
-            }
-        }
-
-        // Event Listeners for Form Switching
-        document.getElementById('toRegister').addEventListener('click', () => {
-            toggleForms(false);
-        });
-
-        document.getElementById('toLogin').addEventListener('click', () => {
-            toggleForms(true);
-        });
-
-        // Validation Functions
-        const validateEmail = (email) => {
-            const re = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
-            return re.test(String(email).toLowerCase());
+        // Prepare the user data to send to the server
+        const userData = {
+            name: googleUser.name,
+            email: googleUser.email,
+            profilePhoto: googleUser.picture, // Get the profile photo URL
         };
 
-        const validatePassword = (password) => password.length >= 8;
-        const validateName = (name) => name.trim().length > 0;
-
-        // Form Validation Setup
-        function setupFormValidation(formId) {
-            const form = document.getElementById(formId);
-            const inputs = form.querySelectorAll('input[type="text"], input[type="email"], input[type="password"]');
-
-            inputs.forEach(input => {
-                input.addEventListener('input', () => {
-                    const value = input.value.trim();
-                    const inputType = input.type;
-                    const errorContainer = input.parentElement;
-                    let isValid = false;
-
-                    switch(inputType) {
-                        case 'email':
-                            isValid = validateEmail(value);
-                            break;
-                        case 'password':
-                            isValid = validatePassword(value);
-                            break;
-                        case 'text':
-                            isValid = validateName(value);
-                            break;
-                    }
-
-                    errorContainer.classList.toggle('error', !isValid);
-                });
-            });
-
-            form.addEventListener('submit', (e) => {
-                e.preventDefault();
-                let formIsValid = true;
-
-                inputs.forEach(input => {
-                    const value = input.value.trim();
-                    const inputType = input.type;
-                    const errorContainer = input.parentElement;
-                    let isValid = false;
-
-                    switch(inputType) {
-                        case 'email':
-                            isValid = validateEmail(value);
-                            break;
-                        case 'password':
-                            isValid = validatePassword(value);
-                            break;
-                        case 'text':
-                            isValid = validateName(value);
-                            break;
-                    }
-
-                    errorContainer.classList.toggle('error', !isValid);
-                    formIsValid = formIsValid && isValid;
-                });
-
-                if (formIsValid) {
-                    alert(`${formId === 'loginForm' ? 'Login' : 'Registration'} submitted successfully!`);
+        // Send the data to the server using fetch
+        fetch('http://localhost:5000/saveUserData', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(userData), // Convert the object to JSON
+        })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Failed to save data on the server');
                 }
+                return response.json();
+            })
+            .then(data => {
+                console.log('Data saved successfully:', data);
+                window.location.href = '/Home Page/dashboard.html'; // Redirect to the dashboard
+                alert(`Welcome, ${googleUser.name}! Redirecting to your dashboard...`);
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('Failed to log in. Please try again.');
             });
+    }
+}
+
+// Initialize Google Identity Services
+function initGoogleAuth() {
+    google.accounts.id.initialize({
+        client_id: '876080209753-0k7oip0morqa1bk0rlhvfi8oeqn9r4uq.apps.googleusercontent.com', // Replace with your Google Client ID
+        callback: handleGoogleAuth,
+    });
+
+    google.accounts.id.renderButton(
+        document.getElementById("googleLogin"),
+        {
+            theme: "outline",
+            size: "large",
+            type: "standard",
         }
+    );
 
-        // Initialize form validations
-        setupFormValidation('loginForm');
-        setupFormValidation('registerForm');
+    google.accounts.id.renderButton(
+        document.getElementById("googleRegister"),
+        {
+            theme: "outline",
+            size: "large",
+            type: "standard",
+        }
+    );
+}
 
-        // Social Login Handlers
-        ['googleLogin', 'googleRegister', 'appleLogin', 'appleRegister'].forEach(id => {
-            document.getElementById(id).addEventListener('click', () => {
-                alert(`Simulated ${id.includes('google') ? 'Google' : 'Apple'} login`);
-            });
-        });
+// Toggle between Login and Register forms
+function toggleForms(showLogin) {
+    const loginForm = document.querySelector('.login-section');
+    const registerForm = document.querySelector('.register-section');
+
+    if (showLogin) {
+        loginForm.classList.add('active');
+        registerForm.classList.remove('active');
+    } else {
+        loginForm.classList.remove('active');
+        registerForm.classList.add('active');
+    }
+}
+
+// Form switch event listeners
+document.getElementById('toRegister').addEventListener('click', () => {
+    toggleForms(false);
+});
+
+document.getElementById('toLogin').addEventListener('click', () => {
+    toggleForms(true);
+});
+
+// Load Google Auth when the page is loaded
+window.onload = initGoogleAuth;
+
+document.getElementById('toRegister').addEventListener('click', () => {
+    document.querySelector('.container').classList.add('slide-left');
+    document.querySelector('.login-section').classList.remove('active');
+    document.querySelector('.register-section').classList.add('active');
+});
+
+document.getElementById('toLogin').addEventListener('click', () => {
+    document.querySelector('.container').classList.remove('slide-left');
+    document.querySelector('.login-section').classList.add('active');
+    document.querySelector('.register-section').classList.remove('active');
+});
