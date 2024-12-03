@@ -811,3 +811,10 @@ header .profile-photo {
 .add-document-btn:hover {
   background-color: #45a049;
 }
+
+.profile-photo img {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  object-fit: cover;
+}

@@ -273,6 +273,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Initial document load
     loadDocuments();
+    loadUserProfile();
 });
 const addDocumentBtn = document.getElementById('add-document-btn');
 const fileUploadModal = document.getElementById('file-upload-modal');
@@ -339,3 +340,30 @@ uploadBtn.addEventListener('click', () => {
     alert('Files will be uploaded');
     fileUploadModal.style.display = 'none';
 });
+
+async function loadUserProfile() {
+    try {
+        const response = await fetch('/HealthMate/USERPAGE/Login%20Page/userData.json'); // Path to your JSON file
+        console.log('Response:', response);
+
+        const users = await response.json();
+        console.log('Users:', users);
+
+        if (users) {
+            const user = users; // Ensure 'user' is properly initialized here
+            console.log('Selected User:', user);
+
+            // Update the profile photo and name in the header
+            const profileImage = document.getElementById('profile-image');
+            const profileName = document.getElementById('profile-name');
+
+            console.log(profileImage);
+            profileImage.src = user.profilePhoto;
+            profileName.textContent = `Hi, ${user.name}`;
+        } else {
+            console.warn("No users found in the JSON file.");
+        }
+    } catch (error) {
+        console.error("Error fetching user data:", error);
+    }
+}
