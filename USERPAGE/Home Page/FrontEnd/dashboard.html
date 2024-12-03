@@ -21,7 +21,7 @@
 <body>
     <!-- Header -->
     <header>
-        <div class="logo"><div class="logo-img"><img src="/Home Page/images/HealthMateLogo1-removebg-preview.png" alt="HealthMate"></div>Health Mate</div>
+        <div class="logo"><div class="logo-img"><img src="images/HealthMateLogo1-removebg-preview.png" alt="HealthMate"></div>Health Mate</div>
         <input class="search" type="text" placeholder="Search...">
         <div class="profile"><div class="profile-photo">👤</div><div class="text">Hi, John</div></div>
     </header>
@@ -30,15 +30,61 @@
     <main>
         <!-- Documents Section -->
         <!-- Documents Section -->
-        <section class="documents">
-          <h2>Documents</h2>
-          <div class="doc-container" id="doc-container">
-              <div class="doc-box">Document 1</div>
-              <div class="doc-box">Document 2</div>
-              <div class="doc-box">Document 3</div>
-              <div class="doc-box">Document 4</div>
-              <button class="add-doc-button" onclick="addDocument()">Add Document</button> <!-- Button to add documents -->
-          </div>
+       
+        <section class="file-management">
+            <div class="file-type-filters">
+                <div class="file-type-filter active" data-type="all">All Files</div>
+                <div class="file-type-filter" data-type="medical-report">Medical Reports</div>
+                <div class="file-type-filter" data-type="prescription">Prescriptions</div>
+                <div class="file-type-filter" data-type="insurance">Insurance</div>
+                <div class="file-type-filter" data-type="other">Others</div>
+            </div>
+        
+            <div class="file-viewer-container">
+                <div class="file-carousel">
+                    <div class="file-preview-container">
+                        <div class="file-preview-wrapper">
+                            <!-- Preloaded File Boxes -->
+                            <div class="file-preview">
+                                <img src="/icons/medical-report-icon.png" alt="Medical Report" class="file-icon">
+                                <div class="file-info">
+                                    <div class="file-name">Annual Health Checkup Report</div>
+                                    <div class="file-size">2.5 MB</div>
+                                </div>
+                                <div class="file-actions">
+                                    <button class="btn view-btn">View</button>
+                                    <button class="btn download-btn">Download</button>
+                                    <button class="btn delete-btn">Delete</button>
+                                </div>
+                            </div>
+        
+                            <div class="file-preview">
+                                <img src="/icons/prescription-icon.png" alt="Prescription" class="file-icon">
+                                <div class="file-info">
+                                    <div class="file-name">Dr. Smith Prescription</div>
+                                    <div class="file-size">320 KB</div>
+                                </div>
+                                <div class="file-actions">
+                                    <button class="btn view-btn">View</button>
+                                    <button class="btn download-btn">Download</button>
+                                    <button class="btn delete-btn">Delete</button>
+                                </div>
+                            </div>
+        
+                            <!-- More preloaded boxes... -->
+                        </div>
+                    </div>
+                </div>
+        
+                <div class="carousel-nav">
+                    <button class="prev-btn">← Previous</button>
+                    <button class="next-btn">Next →</button>
+                </div>
+            </div>
+        
+            <div class="file-upload-modal" id="file-upload-modal">
+                <!-- Your existing upload modal content -->
+            </div>
         </section>
         <!-- Main Content Section -->
         <section class="main-content">
@@ -92,5 +138,7 @@
         </section>
     </main>
     <script src="app.js"></script>
+    <script src="upload.js"></script>
+    
 </body>
 </html>
