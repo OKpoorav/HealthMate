@@ -7,7 +7,7 @@ function handleGoogleAuth(response) {
 
         // Display an alert or redirect user to a home page
         alert(`Welcome, ${googleUser.name}!`);
-        window.location.href = 'USERPAGE/Home Page/FrontEnd/dashboard.html';  // Redirect to home page
+        window.location.href = '/USERPAGE/Home Page/FrontEnd/dashboard.html';  // Redirect to home page
     }
 }
 
@@ -54,11 +54,11 @@ function handleCredentialResponse(response) {
     if (isRegistering) {
         // Simulate user registration success
         alert('Registration successful! Redirecting to the home page...');
-        window.location.href = 'USERPAGE/Home Page/FrontEnd/dashboard.html'; // Change to your home URL
+        window.location.href = '/USERPAGE/Home Page/FrontEnd/dashboard.html'; // Change to your home URL
     } else {
         // Simulate user login success
         alert('Login Successful! Redirecting to the home page...');
-        window.location.href = 'USERPAGE/Home Page/FrontEnd/dashboard.html'; // Change to your home URL
+        window.location.href = '/USERPAGE/Home Page/FrontEnd/dashboard.html'; // Change to your home URL
     }
 }
 
