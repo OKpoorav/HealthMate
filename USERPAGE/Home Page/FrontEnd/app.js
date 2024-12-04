@@ -318,7 +318,7 @@ uploadBtn.addEventListener('click', () => {
 
 async function loadUserProfile() {
     try {
-        const response = await fetch('/HealthMate/USERPAGE/Login%20Page/userData.json'); // Path to your JSON file
+        const response = await fetch('/USERPAGE/Login%20Page/userData.json'); // Path to your JSON file
         console.log('Response:', response);
 
         const users = await response.json();
