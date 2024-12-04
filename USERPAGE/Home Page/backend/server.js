@@ -134,6 +134,11 @@ app.post('/upload-document', upload.single('document'), async (req, res) => {
     }
 });
 
+app.get('/', (req, res) => {
+    const dashboardPath = path.resolve(__dirname, '../frontend/dashboard.html');
+    res.sendFile(dashboardPath);
+});
+
 // Get Documents Route
 app.get('/get-documents', (req, res) => {
     const category = req.query.category || 'all';
@@ -188,7 +193,7 @@ app.get('/', (req, res) => {
 });
 
 // Start the server
-const PORT = process.env.PORT || 3000;
+const PORT = process.env.PORT || 6000;
 app.listen(PORT, () => {
     console.log(`Server running on port ${PORT}`);
     console.log(`Visit http://localhost:${PORT} in your browser`);
