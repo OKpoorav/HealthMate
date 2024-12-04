@@ -1,4 +1,12 @@
 /* General Reset */
+:root {
+  --primary-color: #004d80;
+  --secondary-color: #58a6ff;
+  --background-gradient: linear-gradient(180deg, #eef2f7, #ffffff);
+  --box-shadow-light: 0 4px 6px rgba(0, 0, 0, 0.1);
+  --box-shadow-heavy: 0 10px 20px rgba(0, 0, 0, 0.2);
+}
+
 * {
   margin: 0;
   padding: 0;
@@ -123,6 +131,7 @@ width: 100%;
 .doc-box:hover {
   transform: scale(1.05);
 }
+
 
 .add-doc-button {
   width: 240px;
@@ -810,4 +819,123 @@ header .profile-photo {
 
 .add-document-btn:hover {
   background-color: #45a049;
+}
+/* Popup container */
+#custom-popup {
+  display: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5); /* Semi-transparent background */
+  z-index: 1000; /* Ensure it appears on top */
+  justify-content: center;
+  align-items: center;
+}
+
+/* Popup content */
+.popup-content {
+  background: #ffffff; /* White background */
+  width: 400px;
+  border-radius: 8px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+  padding: 20px;
+  text-align: center;
+  animation: fadeIn 0.3s ease-in-out;
+  font-family: Arial, sans-serif;
+}
+
+/* Close button */
+.popup-close {
+  position: absolute;
+  top: 15px;
+  right: 20px;
+  font-size: 20px;
+  color: #333;
+  cursor: pointer;
+  font-weight: bold;
+  transition: color 0.3s;
+}
+
+.popup-close:hover {
+  color: #ff5a5a; /* Subtle red on hover */
+}
+
+/* Heading inside popup */
+.popup-content h2 {
+  font-size: 20px;
+  color: #333;
+  margin-bottom: 15px;
+}
+
+/* File input styling */
+#file-upload-input {
+  margin: 20px 0;
+  border: 2px dashed #ccc; /* Dashed border for file input */
+  border-radius: 8px;
+  width: 100%;
+  padding: 20px;
+  font-size: 14px;
+  text-align: center;
+  color: #555;
+  cursor: pointer;
+  transition: border-color 0.3s;
+}
+
+#file-upload-input:hover {
+  border-color: #007bff; /* Blue highlight on hover */
+}
+
+/* Upload button */
+.upload-btn {
+  background-color: #007bff; /* Blue button */
+  color: white;
+  border: none;
+  border-radius: 5px;
+  padding: 10px 20px;
+  font-size: 16px;
+  cursor: pointer;
+  transition: background-color 0.3s, box-shadow 0.3s;
+}
+
+.upload-btn:hover {
+  background-color: #0056b3; /* Darker blue on hover */
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2); /* Shadow effect */
+}
+
+/* Animation for popup appearance */
+@keyframes fadeIn {
+  from {
+      opacity: 0;
+      transform: scale(0.9);
+  }
+  to {
+      opacity: 1;
+      transform: scale(1);
+  }
+}
+.file-preview {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border: 1px solid #ccc;
+  padding: 10px;
+  margin-bottom: 10px;
+}
+
+.file-thumbnail {
+  width: 80px;
+  height: 80px;
+  object-fit: cover;
+  margin-right: 10px;
+}
+
+.file-info {
+  flex-grow: 1;
+}
+
+.file-actions {
+  display: flex;
+  gap: 10px;
 }
