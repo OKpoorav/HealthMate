@@ -249,3 +249,96 @@ document.addEventListener('DOMContentLoaded', () => {
     // Initial document load
     loadDocuments();
 });
+    loadUserProfile();
+const addDocumentBtn = document.getElementById('add-document-btn');
+const fileUploadModal = document.getElementById('file-upload-modal');
+const fileUploadClose = document.querySelector('.file-upload-close');
+const fileUploadInput = document.getElementById('file-upload-input');
+const fileList = document.getElementById('file-list');
+const uploadBtn = document.querySelector('.upload-btn');
+
+// Open Modal
+addDocumentBtn.addEventListener('click', () => {
+    fileUploadModal.style.display = 'flex';
+});
+
+// Close Modal
+fileUploadClose.addEventListener('click', () => {
+    fileUploadModal.style.display = 'none';
+});
+
+// Close modal if clicked outside
+fileUploadModal.addEventListener('click', (e) => {
+    if (e.target === fileUploadModal) {
+        fileUploadModal.style.display = 'none';
+    }
+});
+
+// File Selection
+fileUploadInput.addEventListener('change', (e) => {
+    fileList.innerHTML = ''; // Clear previous selections
+    Array.from(e.target.files).forEach(file => {
+        const fileItem = document.createElement('div');
+        fileItem.classList.add('file-list-item');
+        fileItem.innerHTML = `
+            <span>${file.name}</span>
+            <span>${(file.size / 1024).toFixed(2)} KB</span>
+        `;
+        fileList.appendChild(fileItem);
+    });
+});
+
+// Drag and Drop Functionality
+const dropArea = document.querySelector('.file-drop-area');
+
+['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
+    dropArea.addEventListener(eventName, preventDefaults, false);
+});
+
+function preventDefaults(e) {
+    e.preventDefault();
+    e.stopPropagation();
+}
+
+dropArea.addEventListener('drop', handleDrop, false);
+
+function handleDrop(e) {
+    const dt = e.dataTransfer;
+    const files = dt.files;
+    fileUploadInput.files = files;
+    fileUploadInput.dispatchEvent(new Event('change'));
+}
+
+// Upload Button
+uploadBtn.addEventListener('click', () => {
+    // Implement your upload logic here
+    alert('Files will be uploaded');
+    fileUploadModal.style.display = 'none';
+});
+
+async function loadUserProfile() {
+    try {
+        const response = await fetch('/HealthMate/USERPAGE/Login%20Page/userData.json'); // Path to your JSON file
+        console.log('Response:', response);
+
+        const users = await response.json();
+        console.log('Users:', users);
+
+        if (users) {
+            const user = users; // Ensure 'user' is properly initialized here
+            console.log('Selected User:', user);
+
+            // Update the profile photo and name in the header
+            const profileImage = document.getElementById('profile-image');
+            const profileName = document.getElementById('profile-name');
+
+            console.log(profileImage);
+            profileImage.src = user.profilePhoto;
+            profileName.textContent = `Hi, ${user.name}`;
+        } else {
+            console.warn("No users found in the JSON file.");
+        }
+    } catch (error) {
+        console.error("Error fetching user data:", error);
+    }
+}
