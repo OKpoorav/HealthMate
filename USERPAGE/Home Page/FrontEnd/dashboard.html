@@ -23,7 +23,7 @@
     <header>
         <div class="logo">
             <div class="logo-img">
-                <img src="images/HealthMateLogo1-removebg-preview.png" alt="HealthMate">
+                <img src="../images/HealthMateLogo1-removebg-preview.png" alt="HealthMate">
             </div>
             Health Mate
         </div>
@@ -81,7 +81,6 @@
                                 </div>
                             </div>
         
-                            <!-- More preloaded boxes... -->
                         </div>
                     </div>
                 </div>
@@ -91,18 +90,29 @@
                     <button class="next-btn">Next →</button>
                 </div>
             </div>
-        
-            <div class="file-upload-modal" id="file-upload-modal">
-                <!-- Your existing upload modal content -->
+            <button id="add-document-btn" class="btn">Add Document</button>
+                <div id="file-upload-modal" class="file-upload-modal">
+                    <div class="file-upload-modal-content">
+                        <span class="file-upload-close">&times;</span>
+                        <h2>Upload Document</h2>
+                        <div class="file-drop-area">
+                            <p>Drag and drop files here or click to select</p>
+                            <input type="file" id="file-upload-input" multiple accept=".pdf,.jpg,.jpeg,.png,.docx">
+                        </div>
+                        <div id="file-list"></div>
+                        <div class="upload-actions">
+                            <button class="upload-btn">Upload</button>
+                        </div>
+                    </div>
             </div>
             <!-- Add this inside the <body> element -->
-<div id="summaryModal" class="modal">
-    <div class="modal-content">
-        <span class="close-button">&times;</span>
-        <h2>Document Summary</h2>
-        <p id="summaryText"></p>
-    </div>
-</div>
+                <div id="summaryModal" class="modal">
+                    <div class="modal-content">
+                        <span class="close-button">&times;</span>
+                        <h2>Document Summary</h2>
+                        <p id="summaryText"></p>
+                    </div>
+                </div>
         </section>
         
         <!-- Main Content Section -->
@@ -113,10 +123,10 @@
                 <div class="reminders">
                     <div class="slider">
                         <div class="reminders-carousel">
-                            <img src="images/WhatsApp Image 2024-11-30 at 15.54.00.jpeg" alt="Reminder 1" class="carousel-image">
-                            <img src="images/WhatsApp Image 2024-11-30 at 15.55.42.jpeg" alt="Reminder 2" class="carousel-image">
-                            <img src="images/WhatsApp Image 2024-11-30 at 15.58.21.jpeg" alt="Reminder 3" class="carousel-image">
-                            <img src="images/WhatsApp Image 2024-11-30 at 15.59.08.jpeg" alt="Reminder 4" class="carousel-image">
+                            <img src="../images/HealthMateLogo1-removebg-preview.png" alt="Reminder 1" class="carousel-image">
+                            <img src="../images/HealthMateLogo1-removebg-preview.png" alt="Reminder 2" class="carousel-image">
+                            <img src="../images/HealthMateLogo1-removebg-preview.png" alt="Reminder 3" class="carousel-image">
+                            <img src="../images/HealthMateLogo1-removebg-preview.png" alt="Reminder 4" class="carousel-image">
                         </div>
                     </div>
                 </div>

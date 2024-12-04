@@ -672,11 +672,11 @@ header .profile-photo {
   display: flex;
   gap: 20px;
   transition: transform 0.5s ease-in-out;
+  width: fit-content; /* Ensure wrapper takes full content width */
 }
 
 .file-preview {
-  position: relative;
-  width: 250px;
+  flex: 0 0 250px; /* Fixed width, no grow or shrink */
   height: 300px;
   background-color: white;
   border-radius: 15px;
@@ -695,6 +695,8 @@ header .profile-photo {
   transform: translateY(-10px);
   box-shadow: 0 10px 20px rgba(0, 0, 0, 0.15);
 }
+
+/* Rest of the existing CSS remains the same */
 
 .file-preview .file-icon {
   width: 100px;
@@ -803,23 +805,7 @@ header .profile-photo {
       height: 250px;
   }
 }
-.add-document-btn {
-  margin-bottom: 10px;
-  background-color: #4CAF50;
-  color: white;
-  border: none;
-  padding: 10px 20px;
-  text-align: center;
-  text-decoration: none;
-  display: inline-block;
-  font-size: 16px;
-  cursor: pointer;
-  border-radius: 4px;
-}
 
-.add-document-btn:hover {
-  background-color: #45a049;
-}
 /* Popup container */
 #custom-popup {
   display: none;
@@ -847,7 +833,7 @@ header .profile-photo {
 }
 
 /* Close button */
-.popup-close {
+.file-upload-close {
   position: absolute;
   top: 15px;
   right: 20px;
@@ -858,37 +844,47 @@ header .profile-photo {
   transition: color 0.3s;
 }
 
-.popup-close:hover {
+.file-upload-close:hover {
   color: #ff5a5a; /* Subtle red on hover */
 }
 
 /* Heading inside popup */
-.popup-content h2 {
+.file-upload-modal-content h2 {
   font-size: 20px;
   color: #333;
   margin-bottom: 15px;
 }
 
 /* File input styling */
-#file-upload-input {
+.file-upload-modal {
   margin: 20px 0;
   border: 2px dashed #ccc; /* Dashed border for file input */
   border-radius: 8px;
-  width: 100%;
+  width: 60%;
   padding: 20px;
   font-size: 14px;
   text-align: center;
   color: #555;
   cursor: pointer;
   transition: border-color 0.3s;
+  display: none;
+  position: fixed;
+  z-index: 1000;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  left: 290px;
+  background-color: white;
+  top: 390px;
+
 }
 
-#file-upload-input:hover {
-  border-color: #007bff; /* Blue highlight on hover */
+.file-upload-modal:hover {
+  border-color: #5890cc; /* Blue highlight on hover */
 }
 
 /* Upload button */
-.upload-btn {
+#add-document-btn {
   background-color: #007bff; /* Blue button */
   color: white;
   border: none;
@@ -899,7 +895,7 @@ header .profile-photo {
   transition: background-color 0.3s, box-shadow 0.3s;
 }
 
-.upload-btn:hover {
+#add-document-btn:hover {
   background-color: #0056b3; /* Darker blue on hover */
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2); /* Shadow effect */
 }
@@ -945,4 +941,151 @@ header .profile-photo {
   height: 40px;
   border-radius: 50%;
   object-fit: cover;
+}
+
+
+.file-upload-modal-content {
+  background-color: #ffffff;
+  border-radius: 15px;
+  width: 500px;
+  max-width: 90%;
+  padding: 30px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+  position: relative;
+  text-align: center;
+  transition: all 0.3s ease;
+}
+
+
+
+.file-drop-area {
+  border: 2px dashed #007bff;
+  border-radius: 10px;
+  padding: 40px 20px;
+  text-align: center;
+  background-color: #f8f9fa;
+  transition: all 0.3s ease;
+  margin-bottom: 20px;
+}
+
+.file-drop-area:hover {
+  background-color: #e9ecef;
+  border-color: #0056b3;
+}
+
+.file-drop-area.drag-over {
+  background-color: #e6f2ff;
+  border-color: #007bff;
+}
+
+.file-drop-area p {
+  color: #6c757d;
+  margin-bottom: 15px;
+  font-size: 16px;
+}
+
+#file-upload-input {
+  display: none;
+}
+
+.file-upload-label {
+  display: inline-block;
+  background-color: #007bff;
+  color: white;
+  padding: 10px 20px;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.file-upload-label:hover {
+  background-color: #0056b3;
+}
+
+#file-list {
+  margin-top: 20px;
+  max-height: 200px;
+  overflow-y: auto;
+  border: 1px solid #e9ecef;
+  border-radius: 5px;
+}
+
+.file-list-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px;
+  background-color: #f8f9fa;
+  margin-bottom: 5px;
+  border-radius: 5px;
+  transition: background-color 0.3s ease;
+}
+
+.file-list-item:hover {
+  background-color: #e9ecef;
+}
+
+.file-list-item-name {
+  flex-grow: 1;
+  margin-right: 10px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.file-list-item-remove {
+  color: #dc3545;
+  cursor: pointer;
+  transition: color 0.3s ease;
+}
+
+.file-list-item-remove:hover {
+  color: #a71d2a;
+}
+
+.upload-button {
+  background-color: #28a745;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+  margin-top: 20px;
+}
+
+.upload-button:hover {
+  background-color: #218838;
+}
+.modal {
+  display: none;
+  position: fixed;
+  z-index: 1000;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0,0,0,0.5);
+  justify-content: center;
+  align-items: center;
+}
+
+.modal.show {
+  display: flex;
+  animation: fadeIn 0.3s ease-out;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+.upload-btn{
+  background-color: #007bff;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+  margin-top: 20px;   
 }

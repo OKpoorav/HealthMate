@@ -8,7 +8,7 @@ const { DocumentAIClient } = require('@google-cloud/documentai');
 const { DocumentProcessorServiceClient } = require('@google-cloud/documentai');
 const app = express();
 const client = new DocumentProcessorServiceClient({
-    keyFilename: 'servicekey.json',
+    keyFilename: 'HealthMate/USERPAGE/Home Page/backend/servicekey.json',
     
 });
 

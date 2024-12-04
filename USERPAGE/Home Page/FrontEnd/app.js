@@ -342,3 +342,54 @@ async function loadUserProfile() {
         console.error("Error fetching user data:", error);
     }
 }
+
+// Improved Image Carousel
+function setupImageCarousel() {
+    const images = document.querySelectorAll('.carousel-image');
+    if (images.length > 0) {
+        let currentIndex = 0;
+
+        function showNextImage() {
+            images[currentIndex].classList.remove('active');
+            currentIndex = (currentIndex + 1) % images.length;
+            images[currentIndex].classList.add('active');
+        }
+
+        // Initial setup
+        images[currentIndex].classList.add('active');
+        
+        // Use requestAnimationFrame for smoother transitions
+        function autoAdvance() {
+            showNextImage();
+            setTimeout(autoAdvance, 3000);
+        }
+        
+        autoAdvance();
+    }
+}
+
+// Improved File Preview
+function generateFilePreview(doc) {
+    const isImage = ['image/jpeg', 'image/png'].includes(doc.mimetype);
+    const previewUrl = isImage 
+        ? `/uploads/${doc.filename}` 
+        : `/icons/${doc.category || 'default'}-icon.png`;
+
+    const filePreview = document.createElement('div');
+    filePreview.classList.add('file-preview');
+    filePreview.innerHTML = `
+        <img 
+            src="${previewUrl}" 
+            alt="${doc.originalName}" 
+            class="${isImage ? 'file-thumbnail' : 'file-icon'}"
+            onerror="this.src='/icons/default-icon.png'"
+        >
+        <div class="file-info">
+            <div class="file-name">${doc.originalName}</div>
+            <div class="file-size">${(doc.size / 1024).toFixed(2)} KB</div>
+        </div>
+        <!-- Rest of the file actions -->
+    `;
+
+    return filePreview;
+}
