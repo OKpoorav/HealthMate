@@ -8,9 +8,35 @@ import {
   Settings, 
   Upload,
   Clock,
-  Heart
+  Heart,
+  TrendingUp,
+  TrendingDown,
+  Minus
 } from 'lucide-react';
 import { useAuthStore } from '@/lib/store/authStore';
+import DocumentManager from '@/components/documents/DocumentManager';
+import { Line } from 'react-chartjs-2';
+import {
+  Chart as ChartJS,
+  CategoryScale,
+  LinearScale,
+  PointElement,
+  LineElement,
+  Title,
+  Tooltip,
+  Legend
+} from 'chart.js';
+
+// Register ChartJS components
+ChartJS.register(
+  CategoryScale,
+  LinearScale,
+  PointElement,
+  LineElement,
+  Title,
+  Tooltip,
+  Legend
+);
 
 type Tab = 'overview' | 'records' | 'appointments' | 'health' | 'settings';
 
@@ -42,6 +68,54 @@ const PatientDashboard = () => {
     { label: 'Weight', value: '70 kg', trend: 'stable' },
     { label: 'Sleep', value: '7.5 hrs', trend: 'declining' },
   ];
+
+  // Sample data for health trends
+  const healthTrendsData = {
+    labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'],
+    datasets: [
+      {
+        label: 'Blood Pressure (Systolic)',
+        data: [120, 118, 122, 119, 121, 120],
+        borderColor: 'rgb(59, 130, 246)',
+        tension: 0.4,
+      },
+      {
+        label: 'Heart Rate',
+        data: [72, 75, 71, 73, 72, 74],
+        borderColor: 'rgb(239, 68, 68)',
+        tension: 0.4,
+      },
+    ],
+  };
+
+  const chartOptions = {
+    responsive: true,
+    plugins: {
+      legend: {
+        position: 'top' as const,
+      },
+      title: {
+        display: true,
+        text: 'Health Trends',
+      },
+    },
+    scales: {
+      y: {
+        beginAtZero: false,
+      },
+    },
+  };
+
+  const getTrendIcon = (trend: string) => {
+    switch (trend) {
+      case 'improving':
+        return <TrendingUp className="h-4 w-4 text-green-500" />;
+      case 'declining':
+        return <TrendingDown className="h-4 w-4 text-red-500" />;
+      default:
+        return <Minus className="h-4 w-4 text-gray-500" />;
+    }
+  };
 
   return (
     <div className="min-h-screen bg-gray-50 pt-16 pb-12">
@@ -105,6 +179,34 @@ const PatientDashboard = () => {
           <div className="p-6">
             {activeTab === 'overview' && (
               <div className="space-y-6">
+                {/* Health Metrics */}
+                <div>
+                  <h3 className="text-lg font-medium text-gray-900 mb-4">Health Metrics</h3>
+                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+                    {healthMetrics.map((metric, index) => (
+                      <div key={index} className="bg-white p-4 rounded-lg shadow-sm">
+                        <div className="flex items-center justify-between">
+                          <p className="text-sm text-gray-500">{metric.label}</p>
+                          {getTrendIcon(metric.trend)}
+                        </div>
+                        <p className="text-lg font-medium text-gray-900">{metric.value}</p>
+                        <p className={`text-sm ${
+                          metric.trend === 'improving' ? 'text-green-500' : 
+                          metric.trend === 'declining' ? 'text-red-500' : 
+                          'text-gray-500'
+                        }`}>
+                          {metric.trend.charAt(0).toUpperCase() + metric.trend.slice(1)}
+                        </p>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+
+                {/* Health Trends Chart */}
+                <div className="bg-white p-6 rounded-lg shadow-md">
+                  <Line options={chartOptions} data={healthTrendsData} />
+                </div>
+
                 {/* Recent Documents */}
                 <div>
                   <h3 className="text-lg font-medium text-gray-900 mb-4">Recent Documents</h3>
@@ -139,40 +241,11 @@ const PatientDashboard = () => {
                     ))}
                   </div>
                 </div>
-
-                {/* Health Metrics */}
-                <div>
-                  <h3 className="text-lg font-medium text-gray-900 mb-4">Health Metrics</h3>
-                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-                    {healthMetrics.map((metric, index) => (
-                      <div key={index} className="bg-white p-4 rounded-lg shadow-sm">
-                        <p className="text-sm text-gray-500">{metric.label}</p>
-                        <p className="text-lg font-medium text-gray-900">{metric.value}</p>
-                        <p className={`text-sm ${
-                          metric.trend === 'improving' ? 'text-green-500' : 
-                          metric.trend === 'declining' ? 'text-red-500' : 
-                          'text-gray-500'
-                        }`}>
-                          {metric.trend.charAt(0).toUpperCase() + metric.trend.slice(1)}
-                        </p>
-                      </div>
-                    ))}
-                  </div>
-                </div>
               </div>
             )}
 
             {activeTab === 'records' && (
-              <div className="space-y-6">
-                <div className="flex justify-between items-center mb-6">
-                  <h3 className="text-lg font-medium text-gray-900">Medical Records</h3>
-                  <button className="flex items-center px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700">
-                    <Upload className="h-5 w-5 mr-2" />
-                    Upload Document
-                  </button>
-                </div>
-                {/* Add medical records content */}
-              </div>
+              <DocumentManager />
             )}
 
             {activeTab === 'appointments' && (
@@ -191,6 +264,9 @@ const PatientDashboard = () => {
             {activeTab === 'health' && (
               <div className="space-y-6">
                 <h3 className="text-lg font-medium text-gray-900">Health Tracking</h3>
+                <div className="bg-white p-6 rounded-lg shadow-md">
+                  <Line options={chartOptions} data={healthTrendsData} />
+                </div>
                 {/* Add health tracking content */}
               </div>
             )}
