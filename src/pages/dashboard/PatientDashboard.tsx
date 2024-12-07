@@ -38,7 +38,7 @@ ChartJS.register(
   Legend
 );
 
-type Tab = 'overview' | 'records' | 'appointments' | 'health' | 'settings';
+type Tab = 'overview' | 'records' | 'appointments' | 'health';
 
 const PatientDashboard = () => {
   const [activeTab, setActiveTab] = useState<Tab>('overview');
@@ -155,7 +155,6 @@ const PatientDashboard = () => {
                 { id: 'records', label: 'Medical Records', icon: <FileText className="h-5 w-5" /> },
                 { id: 'appointments', label: 'Appointments', icon: <Calendar className="h-5 w-5" /> },
                 { id: 'health', label: 'Health Tracking', icon: <Heart className="h-5 w-5" /> },
-                { id: 'settings', label: 'Settings', icon: <Settings className="h-5 w-5" /> },
               ].map((tab) => (
                 <button
                   key={tab.id}
@@ -268,13 +267,6 @@ const PatientDashboard = () => {
                   <Line options={chartOptions} data={healthTrendsData} />
                 </div>
                 {/* Add health tracking content */}
-              </div>
-            )}
-
-            {activeTab === 'settings' && (
-              <div className="space-y-6">
-                <h3 className="text-lg font-medium text-gray-900">Account Settings</h3>
-                {/* Add settings content */}
               </div>
             )}
           </div>

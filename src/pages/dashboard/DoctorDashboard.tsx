@@ -5,14 +5,13 @@ import {
   Calendar, 
   FileText, 
   MessageSquare, 
-  Settings,
   Search,
   Plus,
   Clock
 } from 'lucide-react';
 import { useAuthStore } from '@/lib/store/authStore';
 
-type Tab = 'overview' | 'patients' | 'appointments' | 'records' | 'messages' | 'settings';
+type Tab = 'overview' | 'patients' | 'appointments' | 'records' | 'messages';
 
 const DoctorDashboard = () => {
   const [activeTab, setActiveTab] = useState<Tab>('overview');
@@ -112,7 +111,6 @@ const DoctorDashboard = () => {
                 { id: 'appointments', label: 'Appointments', icon: <Calendar className="h-5 w-5" /> },
                 { id: 'records', label: 'Medical Records', icon: <FileText className="h-5 w-5" /> },
                 { id: 'messages', label: 'Messages', icon: <MessageSquare className="h-5 w-5" /> },
-                { id: 'settings', label: 'Settings', icon: <Settings className="h-5 w-5" /> },
               ].map((tab) => (
                 <button
                   key={tab.id}
@@ -243,13 +241,6 @@ const DoctorDashboard = () => {
               <div className="space-y-6">
                 <h3 className="text-lg font-medium text-gray-900">Messages</h3>
                 {/* Add messages content */}
-              </div>
-            )}
-
-            {activeTab === 'settings' && (
-              <div className="space-y-6">
-                <h3 className="text-lg font-medium text-gray-900">Practice Settings</h3>
-                {/* Add settings content */}
               </div>
             )}
           </div>
