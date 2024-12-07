@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { loginSchema } from '@/lib/validations/auth';
@@ -11,23 +11,45 @@ type LoginFormData = {
 };
 
 const LoginForm = () => {
+  const [error, setError] = useState<string | null>(null);
   const { register, handleSubmit, formState: { errors } } = useForm<LoginFormData>({
     resolver: zodResolver(loginSchema),
   });
   const login = useAuthStore((state) => state.login);
 
   const onSubmit = async (data: LoginFormData) => {
-    // Simulate API call
     try {
+      setError(null);
       // In a real app, this would be an API call
-      const mockUser = {
-        id: '1',
-        email: data.email,
-        name: 'John Doe',
-        role: 'patient' as const,
-      };
-      login(mockUser);
+      // For demo purposes, we'll simulate a successful login
+      // You would typically validate credentials against a backend here
+      const mockUsers = [
+        {
+          id: '1',
+          email: 'doctor@example.com',
+          password: 'password123',
+          name: 'Dr. John Doe',
+          role: 'doctor' as const,
+        },
+        {
+          id: '2',
+          email: 'patient@example.com',
+          password: 'password123',
+          name: 'Jane Smith',
+          role: 'patient' as const,
+        },
+      ];
+
+      const user = mockUsers.find(u => u.email === data.email);
+      
+      if (user && data.password === user.password) {
+        const { password, ...userWithoutPassword } = user;
+        login(userWithoutPassword);
+      } else {
+        setError('Invalid email or password');
+      }
     } catch (error) {
+      setError('Login failed. Please try again.');
       console.error('Login failed:', error);
     }
   };
@@ -67,6 +89,32 @@ const LoginForm = () => {
           )}
         </div>
 
+        {error && (
+          <div className="rounded-md bg-red-50 p-4">
+            <p className="text-sm text-red-700">{error}</p>
+          </div>
+        )}
+
+        <div className="flex items-center justify-between">
+          <div className="flex items-center">
+            <input
+              id="remember-me"
+              name="remember-me"
+              type="checkbox"
+              className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
+            />
+            <label htmlFor="remember-me" className="ml-2 block text-sm text-gray-900">
+              Remember me
+            </label>
+          </div>
+
+          <div className="text-sm">
+            <a href="#" className="font-medium text-blue-600 hover:text-blue-500">
+              Forgot your password?
+            </a>
+          </div>
+        </div>
+
         <button
           type="submit"
           className="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
@@ -74,6 +122,12 @@ const LoginForm = () => {
           Sign in
         </button>
       </form>
+
+      <div className="mt-4 text-center text-sm text-gray-600">
+        <p>Demo Accounts:</p>
+        <p>Doctor: doctor@example.com / password123</p>
+        <p>Patient: patient@example.com / password123</p>
+      </div>
     </motion.div>
   );
 };

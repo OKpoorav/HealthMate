@@ -6,12 +6,15 @@ import { useAuthStore } from '@/lib/store/authStore';
 
 const Hero = () => {
   const navigate = useNavigate();
-  const isAuthenticated = useAuthStore((state) => state.isAuthenticated);
+  const { isAuthenticated, user } = useAuthStore();
 
   const handleGetStarted = () => {
     if (isAuthenticated) {
-      // In a real app, navigate to dashboard
-      console.log('Navigate to dashboard');
+      if (user?.role === 'doctor') {
+        navigate('/dashboard');
+      } else {
+        navigate('/profile');
+      }
     } else {
       navigate('/auth');
     }

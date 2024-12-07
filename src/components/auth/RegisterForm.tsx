@@ -1,27 +1,43 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { registerSchema } from '@/lib/validations/auth';
 import { motion } from 'framer-motion';
+import { useAuthStore } from '@/lib/store/authStore';
 
 type RegisterFormData = {
   name: string;
   email: string;
   password: string;
   confirmPassword: string;
+  role: 'patient' | 'doctor';
 };
 
 const RegisterForm = () => {
+  const [error, setError] = useState<string | null>(null);
+  const login = useAuthStore((state) => state.login);
+  
   const { register, handleSubmit, formState: { errors } } = useForm<RegisterFormData>({
     resolver: zodResolver(registerSchema),
+    defaultValues: {
+      role: 'patient'
+    }
   });
 
   const onSubmit = async (data: RegisterFormData) => {
-    // Simulate API call
     try {
-      console.log('Registration data:', data);
+      setError(null);
       // In a real app, this would be an API call
+      // Simulating a successful registration
+      const newUser = {
+        id: Math.random().toString(36).substr(2, 9),
+        email: data.email,
+        name: data.name,
+        role: data.role,
+      };
+      login(newUser);
     } catch (error) {
+      setError('Registration failed. Please try again.');
       console.error('Registration failed:', error);
     }
   };
@@ -62,6 +78,22 @@ const RegisterForm = () => {
         </div>
 
         <div>
+          <label htmlFor="role" className="block text-sm font-medium text-gray-700">
+            Role
+          </label>
+          <select
+            {...register('role')}
+            className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
+          >
+            <option value="patient">Patient</option>
+            <option value="doctor">Doctor</option>
+          </select>
+          {errors.role && (
+            <p className="mt-1 text-sm text-red-600">{errors.role.message}</p>
+          )}
+        </div>
+
+        <div>
           <label htmlFor="password" className="block text-sm font-medium text-gray-700">
             Password
           </label>
@@ -88,6 +120,12 @@ const RegisterForm = () => {
             <p className="mt-1 text-sm text-red-600">{errors.confirmPassword.message}</p>
           )}
         </div>
+
+        {error && (
+          <div className="rounded-md bg-red-50 p-4">
+            <p className="text-sm text-red-700">{error}</p>
+          </div>
+        )}
 
         <button
           type="submit"
