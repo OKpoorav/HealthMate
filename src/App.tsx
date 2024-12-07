@@ -9,6 +9,7 @@ import Footer from './components/Footer';
 import AuthPage from './pages/auth/AuthPage';
 import ChatBot from './components/chat/ChatBot';
 import DoctorDashboard from './pages/dashboard/DoctorDashboard';
+import PatientDashboard from './pages/dashboard/PatientDashboard';
 import ProfilePage from './pages/profile/ProfilePage';
 import { useAuthStore } from './lib/store/authStore';
 
@@ -32,10 +33,14 @@ function App() {
           <Route
             path="/dashboard"
             element={
-              isAuthenticated && user?.role === 'doctor' ? (
-                <DoctorDashboard />
+              isAuthenticated ? (
+                user?.role === 'doctor' ? (
+                  <DoctorDashboard />
+                ) : (
+                  <PatientDashboard />
+                )
               ) : (
-                <Navigate to="/" />
+                <Navigate to="/auth" />
               )
             }
           />
@@ -46,11 +51,15 @@ function App() {
           <Route
             path="/"
             element={
-              <>
-                <Hero />
-                <Features />
-                <About />
-              </>
+              isAuthenticated ? (
+                <Navigate to="/dashboard" />
+              ) : (
+                <>
+                  <Hero />
+                  <Features />
+                  <About />
+                </>
+              )
             }
           />
         </Routes>
