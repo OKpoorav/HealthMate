@@ -1,22 +1,74 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { MessageSquare, Send, X, Loader2 } from 'lucide-react';
+import { MessageSquare, Send, X, Loader2, Bot, ArrowDown } from 'lucide-react';
 import { chatService, Message } from '@/lib/services/chatService';
+
+const TypingIndicator = () => (
+  <div className="flex space-x-2 p-3 bg-gray-100 rounded-lg max-w-[80%]">
+    <div className="flex space-x-1 items-center">
+      <Bot className="h-5 w-5 text-blue-600" />
+      <div className="flex space-x-1">
+        {[1, 2, 3].map((dot) => (
+          <motion.div
+            key={dot}
+            className="w-2 h-2 bg-blue-600 rounded-full"
+            initial={{ opacity: 0.5 }}
+            animate={{ opacity: [0.5, 1, 0.5] }}
+            transition={{ duration: 1, repeat: Infinity, delay: dot * 0.2 }}
+          />
+        ))}
+      </div>
+    </div>
+  </div>
+);
+
+const ScrollButton = ({ onClick }: { onClick: () => void }) => (
+  <motion.button
+    onClick={onClick}
+    className="absolute bottom-20 right-4 p-2 bg-blue-600 text-white rounded-full shadow-lg"
+    whileHover={{ scale: 1.1 }}
+    whileTap={{ scale: 0.9 }}
+  >
+    <ArrowDown className="h-4 w-4" />
+  </motion.button>
+);
 
 const ChatBot: React.FC = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [messages, setMessages] = useState<Message[]>(chatService.getMessages());
   const [newMessage, setNewMessage] = useState('');
   const [isLoading, setIsLoading] = useState(false);
+  const [showScrollButton, setShowScrollButton] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
+  const messagesContainerRef = useRef<HTMLDivElement>(null);
 
-  const scrollToBottom = () => {
-    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+  const scrollToBottom = (behavior: ScrollBehavior = 'smooth') => {
+    messagesEndRef.current?.scrollIntoView({ behavior });
   };
+
+  useEffect(() => {
+    if (isOpen) {
+      scrollToBottom('auto');
+    }
+  }, [isOpen]);
 
   useEffect(() => {
     scrollToBottom();
   }, [messages]);
+
+  useEffect(() => {
+    const container = messagesContainerRef.current;
+    if (!container) return;
+
+    const handleScroll = () => {
+      const { scrollTop, scrollHeight, clientHeight } = container;
+      const isNearBottom = scrollHeight - scrollTop - clientHeight < 100;
+      setShowScrollButton(!isNearBottom);
+    };
+
+    container.addEventListener('scroll', handleScroll);
+    return () => container.removeEventListener('scroll', handleScroll);
+  }, []);
 
   const handleSendMessage = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -31,7 +83,6 @@ const ChatBot: React.FC = () => {
       setMessages(chatService.getMessages());
     } catch (error) {
       console.error('Error sending message:', error);
-      // Handle error (show error message to user)
       setMessages(prev => [
         ...prev,
         {
@@ -63,8 +114,11 @@ const ChatBot: React.FC = () => {
             {/* Header */}
             <div className="p-4 border-b flex justify-between items-center bg-blue-600 text-white rounded-t-lg">
               <div className="flex items-center space-x-2">
-                <MessageSquare className="h-5 w-5" />
-                <h3 className="font-semibold">HealthMate Assistant</h3>
+                <Bot className="h-5 w-5" />
+                <div>
+                  <h3 className="font-semibold">HealthMate Assistant</h3>
+                  <p className="text-xs text-blue-100">AI-powered medical assistant</p>
+                </div>
               </div>
               <button
                 onClick={toggleChat}
@@ -75,7 +129,17 @@ const ChatBot: React.FC = () => {
             </div>
 
             {/* Messages */}
-            <div className="flex-1 overflow-y-auto p-4 space-y-4">
+            <div 
+              ref={messagesContainerRef}
+              className="flex-1 overflow-y-auto p-4 space-y-4 scroll-smooth"
+            >
+              {/* Welcome Message */}
+              {messages.length === 1 && (
+                <div className="text-center text-gray-500 text-sm py-4">
+                  👋 Hi! I'm your HealthMate Assistant. How can I help you today?
+                </div>
+              )}
+
               {messages.map((message) => (
                 message.role !== 'system' && (
                   <div
@@ -85,7 +149,7 @@ const ChatBot: React.FC = () => {
                     }`}
                   >
                     <div
-                      className={`max-w-[80%] p-3 rounded-lg ${
+                      className={`max-w-[80%] p-3 rounded-lg shadow-sm ${
                         message.role === 'user'
                           ? 'bg-blue-600 text-white'
                           : 'bg-gray-100 text-gray-900'
@@ -99,24 +163,37 @@ const ChatBot: React.FC = () => {
                   </div>
                 )
               ))}
+              {isLoading && (
+                <div className="flex justify-start">
+                  <TypingIndicator />
+                </div>
+              )}
               <div ref={messagesEndRef} />
             </div>
 
+            {showScrollButton && <ScrollButton onClick={() => scrollToBottom()} />}
+
             {/* Input */}
-            <form onSubmit={handleSendMessage} className="p-4 border-t">
+            <form onSubmit={handleSendMessage} className="p-4 border-t bg-gray-50">
               <div className="flex space-x-2">
                 <input
                   type="text"
                   value={newMessage}
                   onChange={(e) => setNewMessage(e.target.value)}
                   placeholder="Type your message..."
-                  className="flex-1 p-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  className="flex-1 p-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white"
                   disabled={isLoading}
+                  onKeyDown={(e) => {
+                    if (e.key === 'Enter' && !e.shiftKey) {
+                      e.preventDefault();
+                      handleSendMessage(e);
+                    }
+                  }}
                 />
                 <button
                   type="submit"
                   disabled={isLoading || !newMessage.trim()}
-                  className="p-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors disabled:opacity-50"
+                  className="p-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
                 >
                   {isLoading ? (
                     <Loader2 className="h-5 w-5 animate-spin" />
@@ -124,6 +201,9 @@ const ChatBot: React.FC = () => {
                     <Send className="h-5 w-5" />
                   )}
                 </button>
+              </div>
+              <div className="mt-2 text-xs text-gray-500 text-center">
+                Press Enter to send, Shift + Enter for new line
               </div>
             </form>
           </motion.div>
