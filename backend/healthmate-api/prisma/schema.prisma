@@ -1,0 +1,221 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// User model with role-based access
+model User {
+  id            String    @id @default(uuid())
+  email         String    @unique
+  password      String
+  firstName     String
+  lastName      String
+  role          UserRole
+  phoneNumber   String?
+  dateOfBirth   DateTime?
+  address       String?
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+
+  // Role-specific fields
+  doctor        Doctor?
+  patient       Patient?
+
+  // Common relations
+  documents     Document[]
+  chatMessages  ChatMessage[]
+  notifications Notification[]
+}
+
+// Doctor-specific information
+model Doctor {
+  id              String    @id @default(uuid())
+  userId          String    @unique
+  user            User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  specialization  String
+  licenseNumber   String    @unique
+  about           String?
+  education       String[]
+  experience      Int?      // Years of experience
+  
+  // Relations
+  appointments    Appointment[]
+  patients        PatientDoctor[]
+  availability    Availability[]
+}
+
+// Patient-specific information
+model Patient {
+  id                String    @id @default(uuid())
+  userId            String    @unique
+  user              User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  bloodType         String?
+  allergies         String[]
+  medications       String[]
+  emergencyContact  Json?     // Stores emergency contact information
+  
+  // Relations
+  doctors           PatientDoctor[]
+  appointments      Appointment[]
+  healthMetrics     HealthMetric[]
+}
+
+// Many-to-many relationship between patients and doctors
+model PatientDoctor {
+  id          String   @id @default(uuid())
+  patientId   String
+  doctorId    String
+  assignedAt  DateTime @default(now())
+  patient     Patient  @relation(fields: [patientId], references: [id])
+  doctor      Doctor   @relation(fields: [doctorId], references: [id])
+
+  @@unique([patientId, doctorId])
+}
+
+// Appointments
+model Appointment {
+  id          String            @id @default(uuid())
+  patientId   String
+  doctorId    String
+  datetime    DateTime
+  duration    Int               // Duration in minutes
+  type        AppointmentType
+  status      AppointmentStatus @default(SCHEDULED)
+  notes       String?
+  createdAt   DateTime          @default(now())
+  updatedAt   DateTime          @updatedAt
+
+  patient     Patient           @relation(fields: [patientId], references: [id])
+  doctor      Doctor           @relation(fields: [doctorId], references: [id])
+}
+
+// Doctor availability
+model Availability {
+  id          String    @id @default(uuid())
+  doctorId    String
+  dayOfWeek   Int       // 0-6 (Sunday-Saturday)
+  startTime   DateTime  // Time only
+  endTime     DateTime  // Time only
+  
+  doctor      Doctor    @relation(fields: [doctorId], references: [id])
+
+  @@unique([doctorId, dayOfWeek])
+}
+
+// Medical documents
+model Document {
+  id          String        @id @default(uuid())
+  userId      String
+  name        String
+  type        DocumentType
+  category    String?
+  fileUrl     String
+  mimeType    String
+  size        Int
+  summary     String?
+  tags        String[]
+  uploadedAt  DateTime      @default(now())
+  updatedAt   DateTime      @updatedAt
+
+  user        User          @relation(fields: [userId], references: [id])
+}
+
+// Health metrics for patients
+model HealthMetric {
+  id          String    @id @default(uuid())
+  patientId   String
+  type        MetricType
+  value       Float
+  unit        String
+  timestamp   DateTime  @default(now())
+  notes       String?
+
+  patient     Patient   @relation(fields: [patientId], references: [id])
+}
+
+// Chat messages
+model ChatMessage {
+  id          String    @id @default(uuid())
+  userId      String
+  content     String
+  role        MessageRole
+  timestamp   DateTime  @default(now())
+
+  user        User      @relation(fields: [userId], references: [id])
+}
+
+// Notifications
+model Notification {
+  id          String            @id @default(uuid())
+  userId      String
+  type        NotificationType
+  title       String
+  message     String
+  isRead      Boolean          @default(false)
+  createdAt   DateTime         @default(now())
+
+  user        User             @relation(fields: [userId], references: [id])
+}
+
+// Enums
+enum UserRole {
+  PATIENT
+  DOCTOR
+  ADMIN
+}
+
+enum DocumentType {
+  MEDICAL_REPORT
+  PRESCRIPTION
+  INSURANCE
+  LAB_RESULT
+  IMAGING
+  OTHER
+}
+
+enum AppointmentType {
+  CHECKUP
+  FOLLOW_UP
+  CONSULTATION
+  EMERGENCY
+  PROCEDURE
+}
+
+enum AppointmentStatus {
+  SCHEDULED
+  CONFIRMED
+  CANCELLED
+  COMPLETED
+  NO_SHOW
+}
+
+enum MetricType {
+  BLOOD_PRESSURE
+  HEART_RATE
+  BLOOD_SUGAR
+  WEIGHT
+  TEMPERATURE
+  OXYGEN_LEVEL
+  SLEEP
+}
+
+enum MessageRole {
+  USER
+  ASSISTANT
+  SYSTEM
+}
+
+enum NotificationType {
+  APPOINTMENT
+  DOCUMENT
+  MESSAGE
+  REMINDER
+  SYSTEM
+}

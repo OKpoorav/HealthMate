@@ -34,7 +34,7 @@ function App() {
             path="/dashboard"
             element={
               isAuthenticated ? (
-                user?.role === 'doctor' ? (
+                user?.role === 'DOCTOR' ? (
                   <DoctorDashboard />
                 ) : (
                   <PatientDashboard />
