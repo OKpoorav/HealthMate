@@ -1,7 +1,4 @@
-import { ChatOpenAI } from '@langchain/openai';
-import { Document } from 'langchain/document';
-import { PDFLoader } from 'langchain/document_loaders/fs/pdf';
-import { DocxLoader } from 'langchain/document_loaders/fs/docx';
+import { getGeminiModel } from '../config/gemini';
 import { RecursiveCharacterTextSplitter } from 'langchain/text_splitter';
 
 export type DocumentType = 'MEDICAL_REPORT' | 'PRESCRIPTION' | 'INSURANCE' | 'LAB_RESULT' | 'OTHER';
@@ -21,11 +18,7 @@ export interface MedicalDocument {
 }
 
 // Initialize the AI model for document processing
-const model = new ChatOpenAI({
-  modelName: 'gpt-4',
-  temperature: 0.3,
-  openAIApiKey: import.meta.env.VITE_OPENAI_API_KEY,
-});
+const model = getGeminiModel();
 
 export class DocumentService {
   private documents: MedicalDocument[] = [];
@@ -35,7 +28,8 @@ export class DocumentService {
     'application/pdf': 'PDF',
     'image/jpeg': 'JPG',
     'image/png': 'PNG',
-    'application/vnd.openxmlformats-officedocument.wordprocessingml.document': 'DOCX'
+    'application/vnd.openxmlformats-officedocument.wordprocessingml.document': 'DOCX',
+    'text/plain': 'TXT'
   };
 
   // Document categories
@@ -50,13 +44,19 @@ export class DocumentService {
     try {
       // Validate file type
       if (!this.SUPPORTED_TYPES[file.type]) {
-        throw new Error('Unsupported file type');
+        throw new Error(`Unsupported file type: ${file.type}`);
+      }
+
+      // Validate file size (max 10MB)
+      const MAX_FILE_SIZE = 10 * 1024 * 1024; // 10MB in bytes
+      if (file.size > MAX_FILE_SIZE) {
+        throw new Error('File size exceeds 10MB limit');
       }
 
       // Create a blob URL for the file
       const url = URL.createObjectURL(file);
       
-      // Process document content
+      // Extract text content from the file
       const content = await this.extractContent(file);
       
       // Generate AI insights
@@ -80,55 +80,77 @@ export class DocumentService {
       return document;
     } catch (error) {
       console.error('Error uploading document:', error);
-      throw new Error('Failed to upload document');
+      throw new Error(error instanceof Error ? error.message : 'Failed to upload document');
     }
   }
 
   private async extractContent(file: File): Promise<string> {
     try {
-      const arrayBuffer = await file.arrayBuffer();
       let content = '';
-
-      if (file.type === 'application/pdf') {
-        const loader = new PDFLoader(new Blob([arrayBuffer]));
-        const docs = await loader.load();
-        content = docs.map(doc => doc.pageContent).join(' ');
-      } else if (file.type.includes('docx')) {
-        const loader = new DocxLoader(new Blob([arrayBuffer]));
-        const docs = await loader.load();
-        content = docs.map(doc => doc.pageContent).join(' ');
+      
+      if (file.type === 'text/plain') {
+        content = await file.text();
       } else if (file.type.includes('image')) {
-        // For images, we'll need to implement OCR
-        // This is a placeholder for OCR implementation
-        content = 'Image content to be processed with OCR';
+        content = 'Image document - content extraction not yet implemented';
+      } else {
+        const text = await this.readFileAsText(file);
+        content = text || 'Failed to extract text content';
       }
 
-      // Split content into manageable chunks
-      const splitter = new RecursiveCharacterTextSplitter({
-        chunkSize: 1000,
-        chunkOverlap: 200,
-      });
+      // Split content into manageable chunks if it's too long
+      if (content.length > 1000) {
+        const splitter = new RecursiveCharacterTextSplitter({
+          chunkSize: 1000,
+          chunkOverlap: 200,
+        });
 
-      const chunks = await splitter.createDocuments([content]);
-      return chunks.map(chunk => chunk.pageContent).join(' ');
+        const chunks = await splitter.createDocuments([content]);
+        return chunks.map(chunk => chunk.pageContent).join(' ');
+      }
+
+      return content;
     } catch (error) {
       console.error('Error extracting content:', error);
-      throw new Error('Failed to extract document content');
+      return 'Failed to extract content from document';
     }
+  }
+
+  private async readFileAsText(file: File): Promise<string> {
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.onload = (event) => resolve(event.target?.result as string);
+      reader.onerror = (error) => reject(error);
+      reader.readAsText(file);
+    });
   }
 
   private async generateInsights(content: string) {
     try {
+      // Limit content length for the AI model
+      const MAX_CONTENT_LENGTH = 5000;
+      const truncatedContent = content.length > MAX_CONTENT_LENGTH 
+        ? content.slice(0, MAX_CONTENT_LENGTH) + '...'
+        : content;
+
       const prompt = `Analyze the following medical document content and provide:
 1. Document type (MEDICAL_REPORT, PRESCRIPTION, INSURANCE, LAB_RESULT, or OTHER)
 2. A brief summary (max 200 words)
 3. Relevant category
 4. Key tags (max 5)
 
-Content: ${content}`;
+Content: ${truncatedContent}`;
 
-      const response = await model.invoke(prompt);
-      const analysis = response.content.toString();
+      const result = await model.generateContent(prompt);
+      if (!result || !result.response) {
+        throw new Error('Failed to generate AI insights');
+      }
+
+      const response = await result.response;
+      const analysis = response.text();
+
+      if (!analysis) {
+        throw new Error('Empty response from AI model');
+      }
 
       // Parse the AI response
       const type = this.extractDocumentType(analysis);
@@ -149,29 +171,71 @@ Content: ${content}`;
   }
 
   private async generateThumbnail(file: File): Promise<string> {
-    // Implement thumbnail generation based on file type
-    // For now, return placeholder
-    return '/assets/document-thumbnail.png';
+    try {
+      if (file.type.includes('image')) {
+        return URL.createObjectURL(file);
+      }
+      // For non-image files, return a default thumbnail based on file type
+      const fileExtension = this.SUPPORTED_TYPES[file.type].toLowerCase();
+      return `/assets/document-thumbnails/${fileExtension}.png`;
+    } catch (error) {
+      console.error('Error generating thumbnail:', error);
+      return '/assets/document-thumbnails/default.png';
+    }
   }
 
   private extractDocumentType(analysis: string): DocumentType {
-    // Implement logic to extract document type from AI analysis
-    return 'OTHER';
+    try {
+      const types: DocumentType[] = ['MEDICAL_REPORT', 'PRESCRIPTION', 'INSURANCE', 'LAB_RESULT'];
+      const analysisUpper = analysis.toUpperCase();
+      for (const type of types) {
+        if (analysisUpper.includes(type)) {
+          return type;
+        }
+      }
+      return 'OTHER';
+    } catch {
+      return 'OTHER';
+    }
   }
 
   private extractSummary(analysis: string): string {
-    // Implement logic to extract summary from AI analysis
-    return analysis;
+    try {
+      const summaryMatch = analysis.match(/summary:?\s*(.*?)(?=\n|$)/i);
+      return summaryMatch ? summaryMatch[1].trim() : 'No summary available';
+    } catch {
+      return 'No summary available';
+    }
   }
 
   private determineCategory(analysis: string): string {
-    // Implement logic to determine category from AI analysis
-    return 'Uncategorized';
+    try {
+      const analysisLower = analysis.toLowerCase();
+      for (const [category, keywords] of Object.entries(this.CATEGORIES)) {
+        if (keywords.some(keyword => analysisLower.includes(keyword))) {
+          return category;
+        }
+      }
+      return 'Uncategorized';
+    } catch {
+      return 'Uncategorized';
+    }
   }
 
   private extractTags(analysis: string): string[] {
-    // Implement logic to extract tags from AI analysis
-    return [];
+    try {
+      const tagsMatch = analysis.match(/tags:?\s*(.*?)(?=\n|$)/i);
+      if (tagsMatch) {
+        return tagsMatch[1]
+          .split(',')
+          .map(tag => tag.trim())
+          .filter(tag => tag.length > 0)
+          .slice(0, 5);
+      }
+      return ['untagged'];
+    } catch {
+      return ['untagged'];
+    }
   }
 
   getDocuments(): MedicalDocument[] {
@@ -186,6 +250,9 @@ Content: ${content}`;
     const index = this.documents.findIndex(doc => doc.id === id);
     if (index !== -1) {
       URL.revokeObjectURL(this.documents[index].url);
+      if (this.documents[index].thumbnailUrl?.startsWith('blob:')) {
+        URL.revokeObjectURL(this.documents[index].thumbnailUrl);
+      }
       this.documents.splice(index, 1);
     }
   }

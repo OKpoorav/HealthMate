@@ -2,6 +2,7 @@ import React, { useState, useRef, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { MessageSquare, Send, X, Loader2, Bot, ArrowDown } from 'lucide-react';
 import { chatService, Message } from '@/lib/services/chatService';
+import ReactMarkdown from 'react-markdown';
 
 const TypingIndicator = () => (
   <div className="flex space-x-2 p-3 bg-gray-100 rounded-lg max-w-[80%]">
@@ -32,6 +33,31 @@ const ScrollButton = ({ onClick }: { onClick: () => void }) => (
     <ArrowDown className="h-4 w-4" />
   </motion.button>
 );
+
+const ChatMessage = ({ message }: { message: Message }) => {
+  const isUser = message.role === 'user';
+  
+  return (
+    <div className={`flex ${isUser ? 'justify-end' : 'justify-start'}`}>
+      <div
+        className={`max-w-[80%] p-3 rounded-lg shadow-sm ${
+          isUser ? 'bg-blue-600 text-white' : 'bg-gray-100 text-gray-900'
+        }`}
+      >
+        {isUser ? (
+          <p className="text-sm whitespace-pre-wrap">{message.content}</p>
+        ) : (
+          <div className="prose prose-sm max-w-none">
+            <ReactMarkdown>{message.content}</ReactMarkdown>
+          </div>
+        )}
+        <p className="text-xs mt-1 opacity-70">
+          {message.formattedTime}
+        </p>
+      </div>
+    </div>
+  );
+};
 
 const ChatBot: React.FC = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -133,34 +159,9 @@ const ChatBot: React.FC = () => {
               ref={messagesContainerRef}
               className="flex-1 overflow-y-auto p-4 space-y-4 scroll-smooth"
             >
-              {/* Welcome Message */}
-              {messages.length === 1 && (
-                <div className="text-center text-gray-500 text-sm py-4">
-                  👋 Hi! I'm your HealthMate Assistant. How can I help you today?
-                </div>
-              )}
-
               {messages.map((message) => (
                 message.role !== 'system' && (
-                  <div
-                    key={message.id}
-                    className={`flex ${
-                      message.role === 'user' ? 'justify-end' : 'justify-start'
-                    }`}
-                  >
-                    <div
-                      className={`max-w-[80%] p-3 rounded-lg shadow-sm ${
-                        message.role === 'user'
-                          ? 'bg-blue-600 text-white'
-                          : 'bg-gray-100 text-gray-900'
-                      }`}
-                    >
-                      <p className="text-sm whitespace-pre-wrap">{message.content}</p>
-                      <p className="text-xs mt-1 opacity-70">
-                        {new Date(message.timestamp).toLocaleTimeString()}
-                      </p>
-                    </div>
-                  </div>
+                  <ChatMessage key={message.id} message={message} />
                 )
               ))}
               {isLoading && (
